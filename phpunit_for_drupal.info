@@ -1,0 +1,5 @@
+name = PHPUnit for Drupal
+description = Functional testing Drupal with PHPUnit
+core = 7.x
+package = Testing
+s

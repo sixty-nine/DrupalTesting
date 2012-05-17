@@ -1,0 +1,10 @@
+{
+    "name": "Liip/DrupalTesting",
+    "authors": [
+        {
+            "name": "Dan",
+            "email": "dan@dc-home.ch"
+        }
+    ],
+    "require": {}
+}
