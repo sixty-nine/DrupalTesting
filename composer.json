@@ -2,9 +2,16 @@
     "name": "Liip/DrupalTesting",
     "authors": [
         {
-            "name": "Dan",
-            "email": "dan@dc-home.ch"
+            "name": "Daniel Barsotti",
+            "email": "daniel.barsotti@liip.ch"
         }
     ],
-    "require": {}
+    "require": {
+    	"monolog/monolog": "dev-master"
+    },
+    "autoload": {
+        "psr-0": {
+            "Liip\\Drupal\\Testing": "src"
+        }
+    }
 }
