@@ -9,3 +9,11 @@ outside of Drupal.
 Later on I'd like to add some SQLite support to speed up tests.
 
 Lot of code comes from the Simple Test standard Drupal 7 module.
+
+Usage
+-----
+
+```
+# Install composer + init / update, then...
+phpunit -c src/Liip/Drupal/Testing/Tests/
+```
