@@ -36,6 +36,6 @@ class DrupalTestCaseTest extends DrupalTestCase
     public function testDrupalCreateUser()
     {
         $user = $this->drupalCreateUser(uniqid('test_user_'), 'test@test.com', '123123');
-        var_dump($user);
+        //var_dump($user);
     }
 }
