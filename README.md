@@ -10,6 +10,19 @@ Later on I'd like to add some SQLite support to speed up tests.
 
 Lot of code comes from the Simple Test standard Drupal 7 module.
 
+Update
+------
+
+I just discovered:
+
+https://github.com/fabpot/goutte
+
+It makes almost all this code obsolete!
+
+Check src/Liip/Drupal/Testing/Tests/GoutteTest.php
+
+More to come soon...
+
 Usage
 -----
 
