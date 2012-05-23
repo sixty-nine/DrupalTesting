@@ -27,10 +27,6 @@ class DrupalConnector {
         }
     }
 
-//    public function _apachesolr_nodeapi_update($node) {
-//        return _apachesolr_nodeapi_update($node);
-//    }
-
     public function arg($index = NULL, $path = NULL) {
         return arg($index, $path);
     }
@@ -97,6 +93,10 @@ class DrupalConnector {
         return drupal_add_js($data, $type, $scope, $defer, $cache, $preprocess);
     }
 
+    public function drupal_anonymous_user() {
+        return drupal_anonymous_user();
+    }
+
     public function drupal_execute($form_id, &$form_state) {
         return drupal_execute($form_id, $form_state);
     }
@@ -136,6 +136,11 @@ class DrupalConnector {
 
     public function drupal_set_message($message = NULL, $type = 'status', $repeat = TRUE) {
         return drupal_set_message($message, $type, $repeat);
+    }
+
+    public function &drupal_static($name, $default_value = NULL, $reset = FALSE) {
+        $static = &drupal_static($name, $default_value, $reset);
+        return $static;
     }
 
     public function drupal_unpack($obj, $field = 'data') {
@@ -180,6 +185,10 @@ class DrupalConnector {
 
     public function module_exists($module) {
         return module_exists($module);
+    }
+
+    public function module_invoke_all($hook) {
+        return module_invoke_all($hook);
     }
 
     public function l($text, $path, $options = array()) {
@@ -293,12 +302,28 @@ class DrupalConnector {
         return array_intersect($user->roles, $roles);
     }
 
+    public function user_delete($uid) {
+        user_delete($uid);
+    }
+
     public function user_is_logged_in() {
         return user_is_logged_in();
     }
 
     public function user_load($user_info = array()) {
         return user_load($user_info);
+    }
+
+    public function user_password($length = 10) {
+        return user_password($length);
+    }
+
+    public function user_role_grant_permissions($rid, array $permissions = array()) {
+        return user_role_grant_permissions($rid, $permissions);
+    }
+
+    public function user_role_save($role) {
+        return user_role_save($role);
     }
 
     public function user_save($account, $array = array(), $category = 'account') {
