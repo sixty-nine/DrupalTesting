@@ -1,22 +1,23 @@
 <?php
 
-namespace Liip\Drupal\Testing\Debug;
+namespace Liip\Drupal\Testing\Test;
 
 use Monolog\Logger;
 
-class AbstractDebugable implements DebugableInterface
+abstract class DebuggableTestCase extends \PHPUnit_Framework_TestCase
 {
     /**
+     * @private
      * @var \Monolog\Logger
      */
-    protected $logger;
+    private $logger;
 
     /**
      * Set the logger
      * @param \Monolog\Logger $logger
      * @return void
      */
-    function setLogger(Logger $logger)
+    protected function setLogger(Logger $logger)
     {
         $this->logger = $logger;
     }
@@ -25,7 +26,7 @@ class AbstractDebugable implements DebugableInterface
      * Get the logger
      * @return void
      */
-    function getLogger()
+    protected function getLogger()
     {
         return $this->logger;
     }
@@ -37,10 +38,11 @@ class AbstractDebugable implements DebugableInterface
      * @param array $context
      * @return void
      */
-    function log($msg, $level, $context = array())
+    protected function log($msg, $level, $context = array())
     {
         if (!is_null($this->logger)) {
             $this->logger->addRecord($level, $msg, $context);
         }
     }
+
 }

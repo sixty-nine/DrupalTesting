@@ -7,7 +7,7 @@ use Liip\Drupal\Testing\Helper\NetHelper;
 class NetHelper
 {
     /**
-     * Get own IP address
+     * Get own IP address even when running in the CLI.
      * From http://stackoverflow.com/a/6256719
      * @return string
      */

@@ -11,31 +11,24 @@ class DrupalTestCaseTest extends DrupalTestCase
         parent::__construct('http://drupal-test.lo');
     }
 
-    public function testDrupalGetUrl()
+    public function testDrupalLoginLogout()
     {
-        // Calling the function executes an implicit assertion
-        $this->drupalGetUrl('http://unexiting-url.com', 404);
-        $this->drupalGetUrl($this->baseUrl, 200);
-        $this->drupalGetUrl($this->baseUrl);
-        $this->drupalGetUrl('http://google.com', 301);
-    }
+        // Try to get an unauthorized page
+        $this->client->request('GET', 'http://drupal-test.lo/node/add');
+        $this->assertResponseStatusEquals(403);
 
-    public function testDrupalSubmitForm()
-    {
-        // Before to login, we cannot add nodes
-        $this->drupalGetUrl($this->baseUrl . '/node/add', 403);
+        // Login
+        $this->drupalLogin('admin', '123123');
 
-        // Get the login form and extract the form_id and form_build_id
-        $resp = $this->drupalSubmitForm('/user/login', 'user-login', array('name' => 'admin', 'pass' => '123123'));
-        $this->assertEquals(302, $resp->getStatus());
+        // Check we can now get an unauthorized page
+        $this->client->request('GET', 'http://drupal-test.lo/node/add');
+        $this->assertResponseStatusEquals(200);
 
-        // After the login it's possible to add nodes
-        $this->drupalGetUrl($this->baseUrl . '/node/add', 200);
-    }
+        // Logout
+        $this->drupalLogout();
 
-    public function testDrupalCreateUser()
-    {
-        $user = $this->drupalCreateUser(uniqid('test_user_'), 'test@test.com', '123123');
-        //var_dump($user);
+        // Try to get an unauthorized page
+        $this->client->request('GET', 'http://drupal-test.lo/node/add');
+        $this->assertResponseStatusEquals(403);
     }
 }
