@@ -183,6 +183,14 @@ class DrupalConnector {
 //        return migipedia_userinformation($uid);
 //    }
 
+    public function module_disable($module_list, $disable_dependents = TRUE) {
+        module_disable($module_list, $disable_dependents);
+    }
+
+    public function module_enable($module_list, $enable_dependencies = TRUE) {
+        return module_enable($module_list, $enable_dependencies);
+    }
+
     public function module_exists($module) {
         return module_exists($module);
     }

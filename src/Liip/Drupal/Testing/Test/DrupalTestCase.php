@@ -107,17 +107,9 @@ class DrupalTestCase extends WebTestCase
     }
 
     /**
-     * Delete a Drupal user
-     * @param $account
-     * @return void
-     */
-    protected function drupalDeleteUser($account)
-    {
-        $this->connector->user_delete($account->uid);
-    }
-
-    /**
      * Internal helper function; Create a role with specified permissions.
+     *
+     * (from simpletest)
      *
      * @param array $permissions Array of permission names to assign to role.
      *   Array of permission names to assign to role.
@@ -161,6 +153,38 @@ class DrupalTestCase extends WebTestCase
         else {
             return FALSE;
         }
+    }
+
+    /**
+     * Delete a Drupal user
+     * @param $account
+     * @return void
+     */
+    protected function drupalDeleteUser($account)
+    {
+        $this->connector->user_delete($account->uid);
+    }
+
+    /**
+     * Install and enable Drupal modules
+     * @param array $moduleList
+     * @param bool $enableDependencies
+     * @return void
+     */
+    protected function drupalEnableModule(array $moduleList, $enableDependencies = false)
+    {
+        $this->connector->module_enable($moduleList, $enableDependencies);
+    }
+
+    /**
+     * Disable Drupal modules
+     * @param array $moduleList
+     * @param bool $disableDependencies
+     * @return void
+     */
+    protected function drupalDisableModule(array $moduleList, $disableDependencies = false)
+    {
+        $this->connector->module_disable($moduleList, $disableDependencies);
     }
 
     // ----- ASSERTIONS -------------------------------------------------------
@@ -279,6 +303,18 @@ class DrupalTestCase extends WebTestCase
         $this->assertTrue(
             $this->connector->module_exists($moduleName),
             sprintf('The module %s is not enabled', $moduleName)
+        );
+    }
+
+    /**
+     * Assert a module is installed and enabled
+     * @param $moduleName
+     * @return void
+     */
+    protected function assertModuleDisabled($moduleName) {
+        $this->assertFalse(
+            $this->connector->module_exists($moduleName),
+            sprintf('The module %s is not disabled', $moduleName)
         );
     }
 }
