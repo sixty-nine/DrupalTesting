@@ -235,7 +235,17 @@ class DrupalTestCase extends WebTestCase
             $node = $this->connector->node_load($node);
         }
 
-        $this->assertEquals($expectAccess, $this->connector->node_access($op, $account, $node));
+        $this->assertEquals(
+            $expectAccess,
+            $this->connector->node_access($op, $account, $node),
+            sprintf(
+                'Failed to assert that the user %s %s %s access to node %s',
+                $user->uid,
+                $expectAccess ? 'has' : 'does not have',
+                $op,
+                $node->nid
+            )
+        );
     }
 
     /**
@@ -258,5 +268,17 @@ class DrupalTestCase extends WebTestCase
      */
     protected function assertUserCannotAccess($user, $node, $op = 'view') {
         $this->assertFalse($this->assertNodeAccess($op, $user, $node, false));
+    }
+
+    /**
+     * Assert a module is installed and enabled
+     * @param $moduleName
+     * @return void
+     */
+    protected function assertModuleEnabled($moduleName) {
+        $this->assertTrue(
+            $this->connector->module_exists($moduleName),
+            sprintf('The module %s is not enabled', $moduleName)
+        );
     }
 }

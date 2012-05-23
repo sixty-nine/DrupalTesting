@@ -53,4 +53,24 @@ class DrupalTestCaseTest extends DrupalTestCase
         $this->drupalDeleteUser($user);
         $this->assertCannotLogin($user->name, $user->pass_raw);
     }
+
+    public function testAssertModuleEnabled()
+    {
+        $this->assertModuleEnabled('taxonomy');
+
+        /**
+         * This is a phpunit hack, this assertion is expected to fail because
+         * there should be no module named 'unexisting-module' installed.
+         *
+         * @see http://aventures-logicielles.blogspot.com/2011/03/phpunit-detect-failing-skipped-and.html
+         */
+        try {
+            $this->assertModuleEnabled('unexisting-module');
+        } catch (\PHPUnit_Framework_ExpectationFailedException $ex) {
+            // As expected the assertion failed, silently return
+            return;
+        }
+        // The assertion did not fail, make the test fail
+        $this->fail('Failed to assert that the module "unexisting-module" is not installed and enabled');
+    }
 }
