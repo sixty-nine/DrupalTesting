@@ -187,6 +187,11 @@ class DrupalTestCase extends WebTestCase
         $this->connector->module_disable($moduleList, $disableDependencies);
     }
 
+    protected function drupalModuleEnabled($moduleName)
+    {
+        return $this->connector->module_exists($moduleName);
+    }
+
     // ----- ASSERTIONS -------------------------------------------------------
 
     /**
@@ -301,7 +306,7 @@ class DrupalTestCase extends WebTestCase
      */
     protected function assertModuleEnabled($moduleName) {
         $this->assertTrue(
-            $this->connector->module_exists($moduleName),
+            $this->drupalModuleEnabled($moduleName),
             sprintf('The module %s is not enabled', $moduleName)
         );
     }
@@ -313,7 +318,7 @@ class DrupalTestCase extends WebTestCase
      */
     protected function assertModuleDisabled($moduleName) {
         $this->assertFalse(
-            $this->connector->module_exists($moduleName),
+            $this->drupalModuleEnabled($moduleName),
             sprintf('The module %s is not disabled', $moduleName)
         );
     }
