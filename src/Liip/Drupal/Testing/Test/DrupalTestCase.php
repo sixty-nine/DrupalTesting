@@ -192,15 +192,71 @@ class DrupalTestCase extends WebTestCase
         return $valid;
     }
 
+    /**
+     * Assert the given credentials are valid to login to Drupal
+     * @param string $user
+     * @param string $pass
+     * @return void
+     */
     protected function assertCanLogin($user, $pass)
     {
         $this->drupalLogin($user, $pass);
         $this->drupalLogout();
     }
 
+    /**
+     * Assert the given credentials are not valid to login to Drupal
+     * @param string $user
+     * @param string $pass
+     * @return void
+     */
     protected function assertCannotLogin($user, $pass)
     {
         $this->drupalLogin($user, $pass, true);
     }
 
+    /**
+     * Assert the access to a node
+     * @param mixed $user A loaded Drupal user or the uid
+     * @param mixed $node A loaded Drupal node or the nid
+     * @param string $op The operation to test: view, update, delete, create
+     * @param bool $expectAccess TRUE if the user is expected to be able to access the node
+     * @return void
+     */
+    protected function assertNodeAccess($user, $node, $op = 'view', $expectAccess = true)
+    {
+        if (is_numeric($user)) {
+            $account = $this->connector->user_load($user);
+        } else {
+            $account = $user;
+        }
+
+        if (is_numeric($node)) {
+            $node = $this->connector->node_load($node);
+        }
+
+        $this->assertEquals($expectAccess, $this->connector->node_access($op, $account, $node));
+    }
+
+    /**
+     * Assert the given user has the right to do the given operation on a node
+     * @param mixed $user A loaded Drupal user or the uid
+     * @param mixed $node A loaded Drupal node or the nid
+     * @param string $op The operation to test: view, update, delete, create
+     * @return void
+     */
+    protected function assertUserCanAccess($user, $node, $op = 'view') {
+        $this->assertTrue($this->assertNodeAccess($op, $user, $node));
+    }
+
+    /**
+     * Assert the given user does not have the right to do the given operation on a node
+     * @param mixed $user A loaded Drupal user or the uid
+     * @param mixed $node A loaded Drupal node or the nid
+     * @param string $op The operation to test: view, update, delete, create
+     * @return void
+     */
+    protected function assertUserCannotAccess($user, $node, $op = 'view') {
+        $this->assertFalse($this->assertNodeAccess($op, $user, $node, false));
+    }
 }
