@@ -1,6 +1,6 @@
 <?php
 
-namespace Liip\Drupal\Testing\Test;
+namespace Liip\Drupal\Testing\Tests;
 
 use Liip\Drupal\Testing\Test\DrupalTestCase;
 
@@ -87,5 +87,24 @@ class DrupalTestCaseTest extends DrupalTestCase
 //        $this->assertModuleEnabled($hopefullyNotEnabledModule);
 //        $this->drupalDisableModule(array($hopefullyNotEnabledModule));
 //        $this->assertModuleDisabled($hopefullyNotEnabledModule);
+    }
+
+    /**
+     * @group current
+     */
+    public function testCreateRemoveNode()
+    {
+        // Create the node and check it has been saved to the DB
+        $node = $this->drupalCreateNode();
+        $this->assertInstanceOf('stdClass', $node);
+        $this->assertTrue(isset($node->nid) && is_numeric($node->nid) && $node->nid > 0);
+
+        $drupalNode = $this->connector->node_load($node->nid);
+        $this->assertSameNode($drupalNode, $node);
+
+        // Delete the node and check it is not in the DB anymore
+        $this->drupalDeleteNode($node->nid);
+        $drupalNode = $this->connector->node_load($node->nid);
+        $this->assertFalse($drupalNode);
     }
 }

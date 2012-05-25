@@ -44,6 +44,11 @@ class DrupalConnector {
         return cache_set($cid, $data, $table, $expire, $headers);
     }
 
+    public function current_user() {
+        global $user;
+        return $user;
+    }
+
     public function db_affected_rows() {
         return db_affected_rows();
     }
@@ -71,6 +76,10 @@ class DrupalConnector {
 
     public function db_rewrite_sql($query, $primary_table = 'n', $primary_field = 'nid', $args = array()) {
         return db_rewrite_sql($query, $primary_table, $primary_field, $args);
+    }
+
+    public function db_update($table, array $options = array()) {
+        return db_update($table, $options);
     }
 
     public function drupal_access_denied() {
@@ -143,6 +152,10 @@ class DrupalConnector {
         return field_file_load($fid, $reset);
     }
 
+    public function filter_default_format($account = NULL) {
+        return filter_default_format($account);
+    }
+
     public function imagecache_create_url($preset_name, $image_path) {
         return imagecache_create_url($preset_name, $image_path);
     }
@@ -181,6 +194,10 @@ class DrupalConnector {
 
     public function node_access($op, $node, $account = NULL) {
         return node_access($op, $node, $account);
+    }
+
+    public function node_delete($nid) {
+        return node_delete($nid);
     }
 
     public function node_load($param = array(), $revision = NULL, $reset = NULL) {

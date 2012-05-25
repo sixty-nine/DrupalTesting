@@ -8,7 +8,7 @@ use Symfony\Component\DomCrawler\Crawler;
 
 use Monolog\Logger;
 
-class DrupalTestCase extends WebTestCase
+abstract class DrupalTestCase extends WebTestCase
 {
     protected $connector;
 
@@ -219,6 +219,88 @@ class DrupalTestCase extends WebTestCase
         return false;
     }
 
+    /**
+     * Creates a node based on default settings.
+     *
+     * (from simpletest)
+     *
+     * @param array $settings An associative array of settings to change from the defaults, keys are
+     *   An associative array of settings to change from the defaults, keys are
+     *   node properties, for example 'title' => 'Hello, world!'.
+     * @return object
+     *   Created node object.
+     */
+    protected function drupalCreateNode($settings = array())
+    {
+        // Populate defaults array.
+        $settings += array(
+            'body'      => array(LANGUAGE_NONE => array(array())),
+            'title'     => uniqid('node_'),
+            'comment'   => 2,
+            'changed'   => REQUEST_TIME,
+            'moderate'  => 0,
+            'promote'   => 0,
+            'revision'  => 1,
+            'log'       => '',
+            'status'    => 1,
+            'sticky'    => 0,
+            'type'      => 'page',
+            'revisions' => NULL,
+            'language'  => LANGUAGE_NONE,
+        );
+
+      // Use the original node's created time for existing nodes.
+        if (isset($settings['created']) && !isset($settings['date'])) {
+            $settings['date'] = format_date($settings['created'], 'custom', 'Y-m-d H:i:s O');
+        }
+
+        // TODO: Cleanup if it's working
+        // If the node's user uid is not specified manually, use the currently
+        // logged in user if available, or else the user running the test.
+        if (!isset($settings['uid'])) {
+//          if ($this->loggedInUser) {
+//              $settings['uid'] = $this->loggedInUser->uid;
+//          }
+//          else {
+            $settings['uid'] = $this->connector->current_user()->uid;
+//              global $user;
+//              $settings['uid'] = $user->uid;
+//          }
+        }
+
+        // Merge body field value and format separately.
+        $content = uniqid('node_body_');
+        $body = array(
+            'value' => $content,
+            'summary' => null,
+            'format' => $this->connector->filter_default_format(),
+            'safe_value' => "<p>$content</p>\n",
+            'safe_summary' => '',
+        );
+        $settings['body'][$settings['language']][0] += $body;
+
+        $node = (object) $settings;
+        $this->connector->node_save($node);
+
+        // Small hack to link revisions to our test user.
+        $this->connector->db_update('node_revision')
+            ->fields(array('uid' => $node->uid))
+            ->condition('vid', $node->vid)
+            ->execute();
+
+        return $node;
+    }
+
+    /**
+     * Delete a Drupal node
+     * @param int $nid The node id to delete
+     * @return void
+     */
+    protected function drupalDeleteNode($nid) {
+        $this->connector->node_delete($nid);
+    }
+
+
     // ----- ASSERTIONS -------------------------------------------------------
 
     /**
@@ -349,4 +431,33 @@ class DrupalTestCase extends WebTestCase
             sprintf('The module %s is not disabled', $moduleName)
         );
     }
+
+    /**
+     * Assert that all the properties of the actual node that are also defined in the expected node
+     * have the same values in both objects.
+     *
+     * This is usefull to test that a node created with drupalCreateNode correspond to the same node
+     * saved in Drupal. Indeed during the save and load of nodes, Drupal might add/remove properties.
+     *
+     * @param $expectedNode
+     * @param $actualNode
+     * @return void
+     */
+    protected function assertSameNode($expectedNode, $actualNode) {
+
+        foreach ($actualNode as $key => $val) {
+            if (isset($expectedNode->$key)) {
+                $this->assertEquals(
+                    $expectedNode->$key, $val,
+                    sprintf(
+                        "Failed to assert that the value of the property '%s' is the same in expected and actual node (%s <> %s)",
+                        $key,
+                        print_r($expectedNode->$key, true),
+                        $val
+                    )
+                );
+            }
+        }
+    }
+
 }

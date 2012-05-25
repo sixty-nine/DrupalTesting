@@ -12,7 +12,7 @@
 
     <testsuites>
         <testsuite name="Drupal Testing Tests">
-            <directory>./src/*/*/*/Tests</directory>
+            <directory suffix='Test.php'>./src</directory>
         </testsuite>
     </testsuites>
 

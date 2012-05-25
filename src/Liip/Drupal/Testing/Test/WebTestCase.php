@@ -5,7 +5,7 @@ namespace Liip\Drupal\Testing\Test;
 use Goutte\Client;
 use Symfony\Component\DomCrawler\Form;
 
-class WebTestCase extends DebuggableTestCase
+abstract class WebTestCase extends DebuggableTestCase
 {
     protected $client;
 
