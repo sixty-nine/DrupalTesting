@@ -185,11 +185,20 @@ class DrupalTestCase extends WebTestCase
         $this->connector->module_disable($moduleList, $disableDependencies);
     }
 
+    /**
+     * Return true if the given module is enabled
+     * @param string $moduleName
+     * @return bool
+     */
     protected function drupalModuleEnabled($moduleName)
     {
         return $this->connector->module_exists($moduleName);
     }
 
+    /**
+     * Return true is the current user is logged in
+     * @return bool
+     */
     public function drupalIsLoggedIn()
     {
         $crawler = $this->getCrawler($this->baseUrl . '/user');
