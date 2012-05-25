@@ -5,14 +5,14 @@ namespace Liip\Drupal\Testing\Test;
 use Liip\Drupal\Testing\Test\DrupalTestCase;
 
 // TODO: remove binding to my local install
-define ('DRUPAL_ROOT', '/home/dev/drupal-test/src');
+define ('DRUPAL_ROOT', __DIR__ . '/../../../../../../../');
 
 class DrupalTestCaseTest extends DrupalTestCase
 {
     public function __construct()
     {
         // TODO: remove binding to my local install
-        $baseUrl = 'http://drupal-test.lo';
+        $baseUrl = 'http://clientis.lo';
         parent::__construct($baseUrl);
     }
 
@@ -74,11 +74,13 @@ class DrupalTestCaseTest extends DrupalTestCase
 
     public function testEnableDisableModule()
     {
-        // Hopefully no one will use the book module...
-        $this->assertModuleDisabled('book');
-        $this->drupalEnableModule(array('book'));
-        $this->assertModuleEnabled('book');
-        $this->drupalDisableModule(array('book'));
-        $this->assertModuleDisabled('book');
+        // TODO: this module might be enabled in some install
+        $hopefullyNotEnabledModule = 'forum';
+
+        $this->assertModuleDisabled($hopefullyNotEnabledModule);
+        $this->drupalEnableModule(array($hopefullyNotEnabledModule));
+        $this->assertModuleEnabled($hopefullyNotEnabledModule);
+        $this->drupalDisableModule(array($hopefullyNotEnabledModule));
+        $this->assertModuleDisabled($hopefullyNotEnabledModule);
     }
 }
