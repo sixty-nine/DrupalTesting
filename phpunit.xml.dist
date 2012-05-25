@@ -12,7 +12,7 @@
 
     <testsuites>
         <testsuite name="Drupal Testing Tests">
-            <directory>./</directory>
+            <directory>./src/*/*/*/Tests</directory>
         </testsuite>
     </testsuites>
 
