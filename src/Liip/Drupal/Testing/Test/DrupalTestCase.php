@@ -38,15 +38,13 @@ class DrupalTestCase extends WebTestCase
         $form = $crawler->selectButton('Log in')->form();
         $this->submitForm($form, array('name' => $user, 'pass' => $pass));
 
-        $crawler = $this->getCrawler($this->baseUrl . '/user');
-        $this->assertResponseStatusEquals(200);
+        $isLoggedIn = $this->drupalIsLoggedIn();
 
-        $list = $crawler->filterXPath('//a[@href="/user/logout"]');
         if (!$expectedToFail) {
-            $this->assertTrue(count($list) > 0, sprintf("Login failed for user %s, pass %s", $user, $pass));
+            $this->assertTrue($isLoggedIn, sprintf("Login failed for user %s, pass %s", $user, $pass));
             $this->log(sprintf('User %name successfully logged in.', $user->name), Logger::INFO);
         } else {
-            $this->assertTrue(count($list) === 0, sprintf("Login succeeded but was expected to fail for user %s, pass %s", $user, $pass));
+            $this->assertFalse($isLoggedIn, sprintf("Login succeeded but was expected to fail for user %s, pass %s", $user, $pass));
         }
     }
 
@@ -190,6 +188,26 @@ class DrupalTestCase extends WebTestCase
     protected function drupalModuleEnabled($moduleName)
     {
         return $this->connector->module_exists($moduleName);
+    }
+
+    public function drupalIsLoggedIn()
+    {
+        $crawler = $this->getCrawler($this->baseUrl . '/user');
+        $this->assertResponseStatusEquals(200);
+
+        // Search for the logout link (even on non standard install where there is a prefix before the usr /user/logout)
+        $list = $crawler->filterXPath('//a');
+        foreach($list as $el) {
+            if ($el->hasAttribute('href')) {
+                $value = $el->attributes->getNamedItem('href')->value;
+                if (preg_match('/\/user\/logout/', $value)) {
+                    // We found a logout link
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     // ----- ASSERTIONS -------------------------------------------------------
