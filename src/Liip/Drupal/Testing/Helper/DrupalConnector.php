@@ -44,14 +44,6 @@ class DrupalConnector {
         return cache_set($cid, $data, $table, $expire, $headers);
     }
 
-//    public function commentquality_mark_cq_item_for_index($cqId) {
-//        return commentquality_mark_cq_item_for_index($cqId);
-//    }
-//
-//    public function community_tags_get_node_tags($nid) {
-//        return community_tags_get_node_tags($nid);
-//    }
-
     public function db_affected_rows() {
         return db_affected_rows();
     }
@@ -159,30 +151,6 @@ class DrupalConnector {
         return ip_address();
     }
 
-//    public function karma_get_topusers_alltime($limit = 0, $offset = null) {
-//        if ($this->module_exists('karma')) {
-//            return karma_get_topusers_alltime($limit, $offset);
-//        } else {
-//            throw new BadFunctionCallException('Missing Drupal Module (Karma).');
-//        }
-//    }
-//
-//    public function karma_get_topusers_current($limit = 0, $offset = null) {
-//        if ($this->module_exists('karma')) {
-//            return karma_get_topusers_current($limit, $offset);
-//        } else {
-//            throw new BadFunctionCallException('Missing Drupal Module (Karma).');
-//        }
-//    }
-//
-//    public function migipedia_language_switch($language) {
-//        return migipedia_language_switch($language);
-//    }
-//
-//    public function migipedia_userinformation($uid) {
-//        return migipedia_userinformation($uid);
-//    }
-
     public function module_disable($module_list, $disable_dependents = TRUE) {
         module_disable($module_list, $disable_dependents);
     }
@@ -210,42 +178,6 @@ class DrupalConnector {
     public function menu_set_active_item($path) {
         return menu_set_active_item($path);
     }
-
-//    public function migipedia_blog_api_load($lang = 'de', $is_front = false, $uid = null, $limit = 10, $termid = '') {
-//        return migipedia_blog_api_load($lang, $is_front, $uid, $limit, $termid);
-//    }
-//
-//    public function migipedia_blog_preprocess_blog_node($node) {
-//        return migipedia_blog_preprocess_blog_node($node);
-//    }
-//
-//    public function migipedia_generic_check_is_xhr() {
-//        return migipedia_generic_check_is_xhr();
-//    }
-//
-//    public function migipedia_generic_get_mid_from_nid($nid) {
-//        return migipedia_generic_get_mid_from_nid($nid);
-//    }
-//
-//    public function migipedia_generic_get_nid_from_mids(array $mids, $language) {
-//        return migipedia_generic_get_nid_from_mids($mids, $language);
-//    }
-//
-//    public function migipedia_generic_get_tnid_from_nid($nid) {
-//        return migipedia_generic_get_tnid_from_nid($nid);
-//    }
-//
-//    public function migipedia_generic_get_taxonomy_category_tid_by_term($code) {
-//        return migipedia_generic_get_taxonomy_category_tid_by_term($code);
-//    }
-//
-//    public function migipedia_generic_theme_username($uid, $link = true) {
-//        return migipedia_generic_theme_username($uid, $link);
-//    }
-//
-//    public function migipedia_teaser_get_latest_teaser() {
-//        return migipedia_teaser_get_latest_teaser();
-//    }
 
     public function node_access($op, $node, $account = NULL) {
         return node_access($op, $node, $account);
