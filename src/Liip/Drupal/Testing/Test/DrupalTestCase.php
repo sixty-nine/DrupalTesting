@@ -128,7 +128,7 @@ abstract class DrupalTestCase extends WebTestCase
         }
 
         // Create new role.
-        $role = new stdClass();
+        $role = new \stdClass();
         $role->name = $name;
         $this->connector->user_role_save($role);
         $this->connector->user_role_grant_permissions($role->rid, $permissions);
