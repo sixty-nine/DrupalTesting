@@ -89,9 +89,6 @@ class DrupalTestCaseTest extends DrupalTestCase
 //        $this->assertModuleDisabled($hopefullyNotEnabledModule);
     }
 
-    /**
-     * @group current
-     */
     public function testCreateRemoveNode()
     {
         // Create the node and check it has been saved to the DB
