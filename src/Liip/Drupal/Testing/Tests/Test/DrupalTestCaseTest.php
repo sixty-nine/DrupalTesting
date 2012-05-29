@@ -4,16 +4,12 @@ namespace Liip\Drupal\Testing\Tests;
 
 use Liip\Drupal\Testing\Test\DrupalTestCase;
 
-// TODO: remove binding to my local install
-define ('DRUPAL_ROOT', __DIR__ . '/../../../../../../../');
 
 class DrupalTestCaseTest extends DrupalTestCase
 {
     public function __construct()
     {
-        // TODO: remove binding to my local install
-        $baseUrl = 'http://clientis.lo';
-        parent::__construct($baseUrl);
+        parent::__construct(DRUPAL_BASEURL);
     }
 
     public function testDrupalLoginLogout()

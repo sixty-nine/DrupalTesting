@@ -2,15 +2,19 @@
 
 namespace Liip\Drupal\Testing\Test;
 
-use Liip\Drupal\Testing\Helper\DrupalConnector;
+use Liip\Drupal\Testing\Helper\DrupalConnector,
+    Liip\Drupal\Testing\Helper\DrupalHelper;
 
 use Symfony\Component\DomCrawler\Crawler;
 
 use Monolog\Logger;
 
+
 abstract class DrupalTestCase extends WebTestCase
 {
     protected $connector;
+
+    protected $drupalHelper;
 
     protected $baseUrl;
 
@@ -20,7 +24,8 @@ abstract class DrupalTestCase extends WebTestCase
 
         $this->baseUrl = $baseUrl;
         $this->connector = new DrupalConnector();
-        $this->connector->bootstrapDrupal();
+        $this->drupalHelper = new DrupalHelper();
+        $this->drupalHelper->drupalBootstrap();
     }
 
     /**
@@ -60,48 +65,20 @@ abstract class DrupalTestCase extends WebTestCase
     /**
      * Create a user with a given set of permissions.
      *
-     * (from simpletest)
-     *
      * @param string $name
      * @param string $email
      * @param string $pass
      * @param array $permissions
      *   Array of permission names to assign to user. Note that the user always
      *   has the default permissions derived from the "authenticated users" role.
+     * @param array $domains Array of domain_id where the user has access
      * @return object|false
      *   A fully loaded user object with pass_raw property, or FALSE if account
      *   creation fails.
      */
-    protected function drupalCreateUser($name = null, $email = null, $pass = null, array $permissions = array())
+    protected function drupalCreateUser($name = null, $email = null, $pass = null, array $permissions = array(), $domains = array())
     {
-
-        // Create a role with the given permission set, if any.
-        $rid = FALSE;
-        if ($permissions) {
-            $rid = $this->drupalCreateRole($permissions);
-            if (!$rid) {
-                return FALSE;
-            }
-        }
-
-        // Create a user assigned to that role.
-        $edit = array();
-        $edit['name'] = is_null($name) ? uniqid('test_user_') : $name;
-        $edit['mail'] = is_null($email) ? $edit['name'] . '@test.com' : $email;
-        $edit['pass'] = is_null($pass) ? $this->connector->user_password() : $pass;
-        $edit['status'] = 1;
-        if ($rid) {
-            $edit['roles'] = array($rid => $rid);
-        }
-
-        $account = $this->connector->user_save($this->connector->drupal_anonymous_user(), $edit);
-
-        $this->assertTrue(!empty($account->uid), sprintf('Could not create user %s', $name));
-        $this->log(sprintf('User created with name %s and pass %s', $name, $pass), Logger::INFO);
-
-        // Add the raw password so that we can log in as this user.
-        $account->pass_raw = $edit['pass'];
-        return $account;
+        return $this->drupalHelper->drupalCreateUser($name, $email, $pass, $permissions, $domains);
     }
 
     /**
@@ -117,40 +94,7 @@ abstract class DrupalTestCase extends WebTestCase
      */
     protected function drupalCreateRole(array $permissions, $name = NULL)
     {
-        // Generate random name if it was not passed.
-        if (!$name) {
-            $name = uniqid('role_');
-        }
-
-        // Check the all the permissions strings are valid.
-        if (!$this->assertValidPermissions($permissions)) {
-            return FALSE;
-        }
-
-        // Create new role.
-        $role = new \stdClass();
-        $role->name = $name;
-        $this->connector->user_role_save($role);
-        $this->connector->user_role_grant_permissions($role->rid, $permissions);
-
-        $this->assertTrue(isset($role->rid), sprintf('Could not create role %s', $name));
-        $this->log(sprintf("Created role '%s', RID = %s", $name, $role->rid), Logger::INFO);
-
-        if ($role && !empty($role->rid)) {
-            
-            $count = $this->connector->db_query(
-                'SELECT COUNT(*) FROM {role_permission} WHERE rid = :rid',
-                array(':rid' => $role->rid)
-            )->fetchField();
-            
-            $this->assertTrue($count == count($permissions), sprintf('The permissions count for %s does not match', $name));
-            $this->log(sprintf('Created permissions: %s', implode(', ', $permissions)), Logger::INFO);
-
-            return $role->rid;
-        }
-        else {
-            return FALSE;
-        }
+        return $this->drupalCreateRole($permissions, $name);
     }
 
     /**
@@ -160,7 +104,7 @@ abstract class DrupalTestCase extends WebTestCase
      */
     protected function drupalDeleteUser($account)
     {
-        $this->connector->user_delete($account->uid);
+        $this->drupalHelper->drupalDeleteUser($account);
     }
 
     /**
@@ -384,6 +328,56 @@ abstract class DrupalTestCase extends WebTestCase
                 $node->nid
             )
         );
+    }
+
+    /**
+     * Assert there is exactly one entry with the given NID, GID and realm in the
+     * node_access table.
+     *
+     * @param int $nid
+     * @param int $gid
+     * @param string $realm
+     * @return void
+     */
+    protected function assertNodeAccessContains($nid, $gid, $realm) {
+      $this->assertNodeAccessDB($nid, $gid, $realm, 1);
+    }
+
+    /**
+     * Assert there is no entry with the given NID, GID and realm in the node_access table.
+     *
+     * @param int $nid
+     * @param int $gid
+     * @param string $realm
+     * @return void
+     */
+    protected function assertNodeAccessDoesNotContain($nid, $gid, $realm) {
+      $this->assertNodeAccessDB($nid, $gid, $realm, 0);
+    }
+
+    /**
+     * Assert that there are $expectedEntriesCount entries with the given NID, GID and
+     * realm in the node_access table
+     *
+     * @private
+     * @param int $nid
+     * @param int $gid
+     * @param string $realm
+     * @param int $expectedEntriesCount
+     * @return void
+     */
+    private function assertNodeAccessDB($nid, $gid, $realm, $expectedEntriesCount) {
+
+      $query = "select nid
+                from {node_access}
+                where gid = :gid
+                and nid = :nid
+                and realm = :realm
+                and grant_view = 1";
+
+      $res = db_query($query, array(':nid' => $nid, ':gid' => $gid, ':realm' => $realm));
+
+      $this->assertEquals($expectedEntriesCount, $res->rowCount());
     }
 
     /**

@@ -12,21 +12,6 @@ namespace Liip\Drupal\Testing\Helper;
  */
 class DrupalConnector {
 
-    public function bootstrapDrupal() {
-
-        if (defined('DRUPAL_ROOT')) {
-            $_SERVER['REQUEST_METHOD'] = 'get';
-            $_SERVER['REMOTE_ADDR'] = NetHelper::getServerAddress();
-
-            require_once DRUPAL_ROOT . '/includes/bootstrap.inc';
-
-            drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
-
-        } else {
-            throw new \InvalidArgumentException('Constant DRUPAL_ROOT is not defined.');
-        }
-    }
-
     public function arg($index = NULL, $path = NULL) {
         return arg($index, $path);
     }
@@ -98,6 +83,10 @@ class DrupalConnector {
         return drupal_anonymous_user();
     }
 
+    public function drupal_bootstrap($phase = NULL, $new_phase = TRUE) {
+        drupal_bootstrap($phase, $new_phase);
+    }
+
     public function drupal_execute($form_id, &$form_state) {
         return drupal_execute($form_id, $form_state);
     }
@@ -154,6 +143,10 @@ class DrupalConnector {
 
     public function filter_default_format($account = NULL) {
         return filter_default_format($account);
+    }
+
+    public function format_date($timestamp, $type = 'medium', $format = '', $timezone = NULL, $langcode = NULL) {
+        format_date($timestamp, $type, $format, $timezone, $langcode);
     }
 
     public function imagecache_create_url($preset_name, $image_path) {
@@ -220,6 +213,10 @@ class DrupalConnector {
 
     public function product_taxonomy_get_term_by_description($desc, $vid = 0) {
         return product_taxonomy_get_term_by_description($desc, $vid);
+    }
+
+    public function registry_rebuild() {
+        registry_rebuild();
     }
 
     public function session_id() {

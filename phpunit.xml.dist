@@ -16,4 +16,9 @@
         </testsuite>
     </testsuites>
 
+    <php>
+        <const name="DRUPAL_ROOT" value="/path/to/your/drupal/install" />
+        <const name="DRUPAL_BASEURL" value="http://url.of.drupal" />
+    </php>
+
 </phpunit>
