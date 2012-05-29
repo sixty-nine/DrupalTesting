@@ -1,5 +1,6 @@
 <?php
 
+// Load the composer autoloader
 require __DIR__ . '/vendor/autoload.php';
 
 // Check the required constant were defined

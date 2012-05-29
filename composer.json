@@ -1,5 +1,8 @@
 {
-    "name": "Liip/DrupalTesting",
+    "name": "liip/drupal-testing",
+    "description": "A library to integrate PHPUnit with Drupal",
+    "keywords": ["testing", "phpunit", "drupal"],
+    "type": "library",
     "authors": [
         {
             "name": "Daniel Barsotti",
@@ -7,9 +10,11 @@
         }
     ],
     "require": {
+        "php": ">=5.3.0",
     	"monolog/monolog": "dev-master",
         "lapistano/proxy-object": "dev-master",
-        "fabpot/goutte": "dev-master"
+        "fabpot/goutte": "dev-master",
+        "symfony/console": "dev-master"
     },
     "autoload": {
         "psr-0": {
