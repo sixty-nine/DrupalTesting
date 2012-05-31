@@ -155,19 +155,11 @@ class DrupalHelper
             $name = uniqid('role_');
         }
 
-        // Check the all the permissions strings are valid.
-//        if (!$this->assertValidPermissions($permissions)) {
-//            return FALSE;
-//        }
-
         // Create new role.
         $role = new \stdClass();
         $role->name = $name;
         $this->connector->user_role_save($role);
         $this->connector->user_role_grant_permissions($role->rid, $permissions);
-
-        //$this->assertTrue(isset($role->rid), sprintf('Could not create role %s', $name));
-//        $this->log(sprintf("Created role '%s', RID = %s", $name, $role->rid), Logger::INFO);
 
         if ($role && !empty($role->rid)) {
 
@@ -175,9 +167,6 @@ class DrupalHelper
                 'SELECT COUNT(*) FROM {role_permission} WHERE rid = :rid',
                 array(':rid' => $role->rid)
             )->fetchField();
-
-            //$this->assertTrue($count == count($permissions), sprintf('The permissions count for %s does not match', $name));
-//            $this->log(sprintf('Created permissions: %s', implode(', ', $permissions)), Logger::INFO);
 
             return $role->rid;
         }
@@ -327,5 +316,26 @@ class DrupalHelper
         $this->connector->node_delete($nid);
     }
 
+    /**
+     * Return the non-standard roles (i.e. user defined) for a given user
+     * @param object $user A loaded Drupal user
+     * @return array An array of role IDs
+     */
+    public function drupalGetUserNonStandardRoles($user)
+    {
+        // TODO: check if what is above is always true
+        // Here we use a trick, $user->roles will return an array containing another array:
+        //  - for standard roles: array(RID => role name)
+        //  - for non-standard roles: array(RID => RID)
+        // Here we search for the second possibility
+        $roles = array();
+        foreach ($user->roles as $key => $val) {
+            // Do not use strict equality here: one is never sure if Drupal returns a string or an int
+            if ($key == $val) {
+                $roles[] = $key;
+            }
+        }
+        return $roles;
+    }
 
 }

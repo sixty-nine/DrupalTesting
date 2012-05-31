@@ -276,6 +276,10 @@ class DrupalConnector {
         return user_role_grant_permissions($rid, $permissions);
     }
 
+    public function user_role_delete($role) {
+        return user_role_delete($role);
+    }
+
     public function user_role_save($role) {
         return user_role_save($role);
     }

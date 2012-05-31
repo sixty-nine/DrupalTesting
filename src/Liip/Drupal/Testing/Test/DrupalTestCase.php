@@ -98,6 +98,16 @@ abstract class DrupalTestCase extends WebTestCase
     }
 
     /**
+     * Remove a role given by its RID from the database
+     * @param int $rid The role ID
+     * @return void
+     */
+    protected function drupalDeleteRole($rid)
+    {
+        $this->connector->user_role_delete($rid);
+    }
+
+    /**
      * Delete a Drupal user
      * @param $account
      * @return void
@@ -161,6 +171,16 @@ abstract class DrupalTestCase extends WebTestCase
         }
 
         return false;
+    }
+
+    /**
+     * Return the non-standard roles (i.e. user defined) for a given user
+     * @param object $user A loaded Drupal user
+     * @return array An array of role IDs
+     */
+    protected function drupalGetUserNonStandardRoles($user)
+    {
+        return $this->drupalHelper->drupalGetUserNonStandardRoles($user);
     }
 
     /**
