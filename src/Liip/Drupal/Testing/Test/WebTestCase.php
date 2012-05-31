@@ -57,6 +57,27 @@ abstract class WebTestCase extends DebuggableTestCase
         return $crawler->filterXPath(sprintf('//select[@id="%s"]//option', $selectId));
     }
 
+    // ----- DEBUG HELPER FUNCTIONS -------------------------------------------
+
+    protected function dumpSelect(Crawler $crawler, $selectId)
+    {
+        $options = $this->getSelectOptions($crawler, $selectId);
+        echo sprintf("\nDump select %s:\n", $selectId);
+        foreach ($options as $option) {
+            echo sprintf("%s --> %s\n", $option->getAttribute('value'), $option->nodeValue);
+        }
+        echo "\n";
+    }
+
+    protected function dumpCrawler(Crawler $crawler)
+    {
+        echo "\nDump crawler:\n";
+        foreach ($crawler as $key => $element) {
+            echo $element->ownerDocument->saveXml($element) . "\n";
+        }
+        echo "\n";
+    }
+
     // ----- ASSERTIONS -------------------------------------------------------
 
     /**
@@ -124,6 +145,42 @@ abstract class WebTestCase extends DebuggableTestCase
 
         // There are no options in the combo
         $this->fail("No selected option was found for combo $selectId");
+    }
+
+    /**
+     * Assert that the given combo does not contain an option with the given value
+     * @param \Symfony\Component\DomCrawler\Crawler $crawler
+     * @param string $selectId The ID of the combo
+     * @param string $optionValueExpectedNotToBeThere The value of the option that should not be in the combo
+     * @return void
+     */
+    protected function assertSelectDoesNotHaveOption(Crawler $crawler, $selectId, $optionValueExpectedNotToBeThere)
+    {
+        $options = $this->getSelectOptions($crawler, $selectId);
+        foreach ($options as $option) {
+            $this->assertNotEquals(
+                $optionValueExpectedNotToBeThere,
+                $option->getAttribute('value'),
+                sprintf('Failed to assert that the combo %s does not contain an option with the value %s', $selectId, $optionValueExpectedNotToBeThere)
+            );
+        }
+    }
+
+    /**
+     * Assert that the given combo contains an option with the given value
+     * @param \Symfony\Component\DomCrawler\Crawler $crawler
+     * @param string $selectId The ID of the combo
+     * @param string $optionValueExpectedToBeThere The value of the option that should be in the combo
+     * @return void
+     */
+    protected function assertSelectHasOption(Crawler $crawler, $selectId, $optionValueExpectedToBeThere)
+    {
+        $options = $this->getSelectOptions($crawler, $selectId);
+        $found = false;
+        foreach ($options as $option) {
+            $found = $found || ($option->getAttribute('value') == $optionValueExpectedToBeThere);
+        }
+        $this->assertTrue($found, sprintf("The combo %s does not contain an option with value %s", $selectId, $optionValueExpectedToBeThere));
     }
 
     protected function assertContainsText(Crawler $crawler, $expectedText)
