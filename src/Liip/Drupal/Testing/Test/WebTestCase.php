@@ -69,12 +69,19 @@ abstract class WebTestCase extends DebuggableTestCase
         echo "\n";
     }
 
+    protected function getCrawlerContent(Crawler $crawler)
+    {
+        $res = '';
+        foreach ($crawler as $key => $element) {
+            $res .= $element->ownerDocument->saveXml($element) . "\n";
+        }
+        return $res;
+    }
+
     protected function dumpCrawler(Crawler $crawler)
     {
         echo "\nDump crawler:\n";
-        foreach ($crawler as $key => $element) {
-            echo $element->ownerDocument->saveXml($element) . "\n";
-        }
+        echo $this->getCrawlerContent($crawler);
         echo "\n";
     }
 
@@ -187,4 +194,10 @@ abstract class WebTestCase extends DebuggableTestCase
     {
         $this->assertTrue(false != preg_match('/' . preg_quote($expectedText) . '/', $crawler->text()));
     }
+
+    protected function assertDoesNotContainText(Crawler $crawler, $expectedText)
+    {
+        $this->assertTrue(false === preg_match('/' . preg_quote($expectedText) . '/', $crawler->text()));
+    }
+
 }
