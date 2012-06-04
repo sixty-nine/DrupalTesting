@@ -12,27 +12,6 @@ class DrupalTestCaseTest extends DrupalTestCase
         parent::__construct(DRUPAL_BASEURL);
     }
 
-    public function testDrupalLoginLogout()
-    {
-        // Try to get an unauthorized page
-        $this->client->request('GET', $this->baseUrl . '/node/add');
-        $this->assertResponseStatusEquals(403);
-
-        // Login
-        $this->drupalLogin('admin', '123123');
-
-        // Check we can now get an unauthorized page
-        $this->client->request('GET', $this->baseUrl . '/node/add');
-        $this->assertResponseStatusEquals(200);
-
-        // Logout
-        $this->drupalLogout();
-
-        // Try to get an unauthorized page
-        $this->client->request('GET', $this->baseUrl . '/node/add');
-        $this->assertResponseStatusEquals(403);
-    }
-
     public function testDrupalCreateUser()
     {
         // Create the user
@@ -48,6 +27,31 @@ class DrupalTestCaseTest extends DrupalTestCase
         // Delete the user
         $this->drupalDeleteUser($user);
         $this->assertCannotLogin($user->name, $user->pass_raw);
+    }
+
+    public function testDrupalLoginLogout()
+    {
+        $user = $this->drupalCreateUser(null, null, null, array('create page content'));
+
+        // Try to get an unauthorized page
+        $this->client->request('GET', $this->baseUrl . '/node/add');
+        $this->assertResponseStatusEquals(403);
+
+        // Login
+        $this->drupalLogin($user->name, $user->pass_raw);
+
+        // Check we can now get an unauthorized page
+        $this->client->request('GET', $this->baseUrl . '/node/add');
+        $this->assertResponseStatusEquals(200);
+
+        // Logout
+        $this->drupalLogout();
+
+        // Try to get an unauthorized page
+        $this->client->request('GET', $this->baseUrl . '/node/add');
+        $this->assertResponseStatusEquals(403);
+
+        $this->drupalDeleteUser($user);
     }
 
     public function testAssertModuleEnabled()
