@@ -16,7 +16,14 @@ Usage
 
 ```
 # Install composer + init / update, then...
-phpunit -c src/Liip/Drupal/Testing/Tests/
+composer.phar install
+
+# Duplicate and adapt the test configuration
+# You have to adapt the DRUPAL_ROOT and DRUPAL_URL to point to a working Drupal instance
+cp phpunit.xml.dist phpunit.xml
+
+# Run the tests
+phpunit -c .
 ```
 
 TODO
