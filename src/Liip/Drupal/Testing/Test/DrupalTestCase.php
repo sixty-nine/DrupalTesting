@@ -40,7 +40,7 @@ abstract class DrupalTestCase extends WebTestCase
         $crawler = $this->getCrawler($this->baseUrl . '/user');
         $this->assertResponseStatusEquals(200);
 
-        $form = $crawler->selectButton('Log in')->form();
+        $form = $crawler->selectButton(t('Log in'))->form();
         $this->submitForm($form, array('name' => $user, 'pass' => $pass));
 
         $isLoggedIn = $this->drupalIsLoggedIn();
