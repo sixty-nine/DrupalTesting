@@ -14,6 +14,9 @@ abstract class WebTestCase extends DebuggableTestCase
     public function __construct()
     {
         $this->client = new Client();
+        $guzzleClient = $this->client->getClient();
+        $guzzleClient->setConfig(array('curl.CURLOPT_SSL_VERIFYHOST' => false));
+        $guzzleClient->setConfig(array('curl.CURLOPT_SSL_VERIFYPEER' => false));
     }
 
     /**
