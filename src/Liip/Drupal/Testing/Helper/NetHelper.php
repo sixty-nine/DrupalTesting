@@ -2,8 +2,6 @@
 
 namespace Liip\Drupal\Testing\Helper;
 
-use Liip\Drupal\Testing\Helper\NetHelper;
-
 class NetHelper
 {
     /**
@@ -42,6 +40,9 @@ class NetHelper
         } else {
             $ifconfig = shell_exec('/sbin/ifconfig eth0');
             preg_match('/addr:([\d\.]+)/', $ifconfig, $match);
+            if (! count($match)) {
+              return '127.0.0.1';
+            }
             return $match[1];
         }
         }
