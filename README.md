@@ -23,6 +23,7 @@ composer.phar install
 cp phpunit.xml.dist phpunit.xml
 
 # Run the tests
+# The self tests will only succeed if you enabled the short URLs for your Drupal install.
 phpunit -c .
 ```
 
