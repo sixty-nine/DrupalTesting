@@ -200,7 +200,7 @@ abstract class WebTestCase extends DebuggableTestCase
 
     protected function assertDoesNotContainText(Crawler $crawler, $expectedText)
     {
-        $this->assertTrue(false === preg_match('/' . preg_quote($expectedText) . '/', $crawler->text()));
+        $this->assertTrue(false == preg_match('/' . preg_quote($expectedText) . '/', $crawler->text()));
     }
 
 }
