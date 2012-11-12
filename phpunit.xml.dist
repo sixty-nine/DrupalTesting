@@ -19,6 +19,7 @@
     <php>
         <const name="DRUPAL_ROOT" value="/path/to/your/drupal/install" />
         <const name="DRUPAL_BASEURL" value="http://url.of.drupal" />
+        <const name="DRUPAL_ADMIN_PASSWORD" value="admin" />
     </php>
 
 </phpunit>
