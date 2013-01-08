@@ -10,7 +10,7 @@ namespace Liip\Drupal\Testing\Helper;
  *
  * Please order the functions alphabetically!
  */
-class DrupalConnector {
+class DrupalConnectorOld {
 
     public function arg($index = NULL, $path = NULL) {
         return arg($index, $path);

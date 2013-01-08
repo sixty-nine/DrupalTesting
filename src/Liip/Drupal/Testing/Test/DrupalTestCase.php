@@ -2,8 +2,9 @@
 
 namespace Liip\Drupal\Testing\Test;
 
-use Liip\Drupal\Testing\Helper\DrupalConnector,
-    Liip\Drupal\Testing\Helper\DrupalHelper;
+use Liip\Drupal\Testing\Helper\DrupalHelper;
+
+use Liip\Drupal\Modules\DrupalConnector\ConnectorFactory;
 
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -23,7 +24,7 @@ abstract class DrupalTestCase extends WebTestCase
         parent::__construct();
 
         $this->baseUrl = $baseUrl;
-        $this->connector = new DrupalConnector();
+        //$this->connector = new DrupalConnector();
         $this->drupalHelper = new DrupalHelper();
         $this->drupalHelper->drupalBootstrap();
     }

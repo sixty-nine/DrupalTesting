@@ -2,22 +2,12 @@
 
 namespace Liip\Drupal\Testing\Helper;
 
+use Liip\Drupal\Modules\DrupalConnector\ConnectorFactory;
+
 use Goutte\Client;
 
 class DrupalHelper
 {
-    protected $connector;
-
-    public function __construct()
-    {
-        $this->connector = new DrupalConnector();
-    }
-
-    public function getConnector()
-    {
-        return $this->connector;
-    }
-
     public function drupalBootstrap($httpHost = null)
     {
         if (defined('DRUPAL_ROOT')) {
@@ -46,7 +36,7 @@ class DrupalHelper
             require_once DRUPAL_ROOT . '/modules/system/system.module';
             require_once DRUPAL_ROOT . '/includes/database/select.inc';
 
-            $this->connector->drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
+            ConnectorFactory::getBootstrapConnector()->drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
 
         } else {
             throw new \InvalidArgumentException('Constant DRUPAL_ROOT is not defined.');
@@ -127,7 +117,7 @@ class DrupalHelper
           $edit['domain_user'][$domainId] = $domainId;
         }
 
-        $account = $this->connector->user_save($this->connector->drupal_anonymous_user(), $edit);
+        $account = ConnectorFactory::getUserConnector()->user_save(ConnectorFactory::getBootstrapConnector()->drupal_anonymous_user(), $edit);
 
 //        $this->assertTrue(!empty($account->uid), sprintf('Could not create user %s', $name));
 //        $this->log(sprintf('User created with name %s and pass %s', $name, $pass), Logger::INFO);
@@ -158,12 +148,13 @@ class DrupalHelper
         // Create new role.
         $role = new \stdClass();
         $role->name = $name;
-        $this->connector->user_role_save($role);
-        $this->connector->user_role_grant_permissions($role->rid, $permissions);
+        $connector = ConnectorFactory::getUserConnector();
+        $connector->user_role_save($role);
+        $connector->user_role_grant_permissions($role->rid, $permissions);
 
         if ($role && !empty($role->rid)) {
 
-            $count = $this->connector->db_query(
+            $count = ConnectorFactory::getDatabaseConnector()->db_query(
                 'SELECT COUNT(*) FROM {role_permission} WHERE rid = :rid',
                 array(':rid' => $role->rid)
             )->fetchField();
@@ -182,33 +173,33 @@ class DrupalHelper
      */
     public function drupalDeleteUser($account)
     {
-        $this->connector->user_delete($account->uid);
+        ConnectorFactory::getUserConnector()->user_delete($account->uid);
     }
 
     public function drupalGetUserByName($name)
     {
-        $list = $this->connector->db_query(
+        $list = ConnectorFactory::getDatabaseConnector()->db_query(
             'SELECT uid FROM {users} WHERE name = :name',
             array(':name' => $name)
         )->fetchAllAssoc('uid');
 
         if (!empty($list)) {
             $item = reset($list);
-            return $this->connector->user_load($item->uid);
+            return ConnectorFactory::getUserConnector()->user_load($item->uid);
         }
         return false;
     }
 
     public function drupalGetNodeByTitle($title)
     {
-        $list = $this->connector->db_query(
+        $list = ConnectorFactory::getDatabaseConnector()->db_query(
             'SELECT nid FROM {node} WHERE title = :title',
             array(':title' => $title)
         )->fetchAllAssoc('nid');
 
         if (!empty($list)) {
             $item = reset($list);
-            return $this->connector->node_load($item->nid);
+            return ConnectorFactory::getNodeConnector()->node_load($item->nid);
         }
         return false;
     }
@@ -221,7 +212,7 @@ class DrupalHelper
      */
     public function drupalEnableModule(array $moduleList, $enableDependencies = false)
     {
-        $this->connector->module_enable($moduleList, $enableDependencies);
+        ConnectorFactory::getModuleConnector()->module_enable($moduleList, $enableDependencies);
     }
 
     /**
@@ -232,7 +223,7 @@ class DrupalHelper
      */
     public function drupalDisableModule(array $moduleList, $disableDependencies = false)
     {
-        $this->connector->module_disable($moduleList, $disableDependencies);
+        ConnectorFactory::getModuleConnector()->module_disable($moduleList, $disableDependencies);
     }
 
     /**
@@ -242,7 +233,7 @@ class DrupalHelper
      */
     public function drupalModuleEnabled($moduleName)
     {
-        return $this->connector->module_exists($moduleName);
+        return ConnectorFactory::getModuleConnector()->module_exists($moduleName);
     }
 
     /**
@@ -277,11 +268,11 @@ class DrupalHelper
 
       // Use the original node's created time for existing nodes.
         if (isset($settings['created']) && !isset($settings['date'])) {
-            $settings['date'] = $this->connector->format_date($settings['created'], 'custom', 'Y-m-d H:i:s O');
+            $settings['date'] = ConnectorFactory::getCommonConnector()->format_date($settings['created'], 'custom', 'Y-m-d H:i:s O');
         }
 
         if (!isset($settings['uid'])) {
-            $settings['uid'] = $this->connector->current_user()->uid;
+            $settings['uid'] = ConnectorFactory::getUserConnector()->current_user()->uid;
         }
 
         // Merge body field value and format separately.
@@ -289,17 +280,17 @@ class DrupalHelper
         $body = array(
             'value' => $content,
             'summary' => null,
-            'format' => $this->connector->filter_default_format(),
+//            'format' => $this->connector->filter_default_format(), // TODO: find out if this is needed
             'safe_value' => "<p>$content</p>\n",
             'safe_summary' => '',
         );
         $settings['body'][$settings['language']][0] += $body;
 
         $node = (object) $settings;
-        $this->connector->node_save($node);
+        ConnectorFactory::getNodeConnector()->node_save($node);
 
         // Small hack to link revisions to our test user.
-        $this->connector->db_update('node_revision')
+        ConnectorFactory::getDatabaseConnector()->db_update('node_revision')
             ->fields(array('uid' => $node->uid))
             ->condition('vid', $node->vid)
             ->execute();
@@ -313,7 +304,7 @@ class DrupalHelper
      * @return void
      */
     public function drupalDeleteNode($nid) {
-        $this->connector->node_delete($nid);
+        ConnectorFactory::getNodeConnector()->node_delete($nid);
     }
 
     /**

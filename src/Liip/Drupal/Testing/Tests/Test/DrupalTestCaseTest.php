@@ -31,7 +31,7 @@ class DrupalTestCaseTest extends DrupalTestCase
 
     public function testDrupalLoginLogout()
     {
-        $user = $this->drupalCreateUser(null, null, null, array('create page content'));
+        $user = $this->drupalCreateUser(null, null, null, array('administer nodes'));
 
         // Try to get an unauthorized page
         $this->client->request('GET', $this->baseUrl . '/node/add');
@@ -87,6 +87,7 @@ class DrupalTestCaseTest extends DrupalTestCase
 //        $this->assertModuleEnabled($hopefullyNotEnabledModule);
 //        $this->drupalDisableModule(array($hopefullyNotEnabledModule));
 //        $this->assertModuleDisabled($hopefullyNotEnabledModule);
+        $this->markTestSkipped();
     }
 
     public function testCreateRemoveNode()
