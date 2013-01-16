@@ -23,7 +23,7 @@ class DrupalTestCaseTest extends DrupalTestCase
         $this->assertTrue(is_array($user->roles));
         $this->assertContains('anonymous user', $user->roles);
         $this->assertContains('authenticated user', $user->roles);
-        $this->assertCanLogin($user->name, $user->pass_raw);
+        $this->assertCanLogin($user);
 
         // Delete the user
         $this->drupalDeleteUser($user);
@@ -39,17 +39,17 @@ class DrupalTestCaseTest extends DrupalTestCase
         $this->assertResponseStatusEquals(403);
 
         // Login
-        $this->drupalLogin($user->name, $user->pass_raw);
+        $this->drupalLogin($user);
 
         // Check we can now get an unauthorized page
-        $this->client->request('GET', $this->baseUrl . '/node/add');
+        $this->client->request('GET', $this->baseUrl . '/user/' . $user->uid);
         $this->assertResponseStatusEquals(200);
 
         // Logout
         $this->drupalLogout();
 
         // Try to get an unauthorized page
-        $this->client->request('GET', $this->baseUrl . '/node/add');
+        $this->client->request('GET', $this->baseUrl . '/user/' . $user->uid);
         $this->assertResponseStatusEquals(403);
 
         $this->drupalDeleteUser($user);

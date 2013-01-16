@@ -119,9 +119,6 @@ class DrupalHelper
 
         $account = ConnectorFactory::getUserConnector()->user_save(ConnectorFactory::getBootstrapConnector()->drupal_anonymous_user(), $edit);
 
-//        $this->assertTrue(!empty($account->uid), sprintf('Could not create user %s', $name));
-//        $this->log(sprintf('User created with name %s and pass %s', $name, $pass), Logger::INFO);
-
         // Add the raw password so that we can log in as this user.
         $account->pass_raw = $edit['pass'];
         return $account;

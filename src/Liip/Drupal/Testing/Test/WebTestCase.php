@@ -30,6 +30,11 @@ abstract class WebTestCase extends DebuggableTestCase
         return $this->client->request($method, $url);
     }
 
+    protected function getResponse()
+    {
+        return $this->client->getResponse();
+    }
+
     /**
      * Submit a form with the given values and assert the response status is 200
      * @param \Symfony\Component\DomCrawler\Form $form

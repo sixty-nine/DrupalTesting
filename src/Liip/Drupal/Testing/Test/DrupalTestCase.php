@@ -33,21 +33,21 @@ abstract class DrupalTestCase extends WebTestCase
      * @param bool $expectedToFail Set this to true if you expect the credentials to be wrong
      * @return void
      */
-    protected function drupalLogin($user, $pass, $expectedToFail = false)
+    protected function drupalLogin($user, $expectedToFail = false)
     {
         $crawler = $this->getCrawler($this->baseUrl . '/user');
         $this->assertResponseStatusEquals(200);
 
         $form = $crawler->selectButton(t('Log in'))->form();
-        $this->submitForm($form, array('name' => $user, 'pass' => $pass));
+        $this->submitForm($form, array('name' => $user->name, 'pass' => $user->pass_raw));
 
-        $isLoggedIn = $this->drupalIsLoggedIn();
+        $isLoggedIn = $this->drupalIsLoggedIn($user);
 
         if (!$expectedToFail) {
-            $this->assertTrue($isLoggedIn, sprintf("Login failed for user %s, pass %s", $user, $pass));
+            $this->assertTrue($isLoggedIn, sprintf("Login failed for user %s, pass %s", $user->name, $user->pass_raw));
             $this->log(sprintf('User %name successfully logged in.', $user->name), Logger::INFO);
         } else {
-            $this->assertFalse($isLoggedIn, sprintf("Login succeeded but was expected to fail for user %s, pass %s", $user, $pass));
+            $this->assertFalse($isLoggedIn, sprintf("Login succeeded but was expected to fail for user %s, pass %s", $user->name, $user->pass_raw));
         }
     }
 
@@ -151,26 +151,9 @@ abstract class DrupalTestCase extends WebTestCase
      * Return true is the current user is logged in
      * @return bool
      */
-    public function drupalIsLoggedIn()
+    public function drupalIsLoggedIn($user)
     {
-        $crawler = $this->getCrawler($this->baseUrl . '/user');
-        $this->assertResponseStatusEquals(200);
-
-      return true;
-      // TODO: this does not work on all the themes
-        // Search for the logout link (even on non standard install where there is a prefix before the usr /user/logout)
-//        $list = $crawler->filterXPath('//a');
-//        foreach($list as $el) {
-//            if ($el->hasAttribute('href')) {
-//                $value = $el->attributes->getNamedItem('href')->value;
-//                if (preg_match('/\/user\/logout/', $value)) {
-//                    // We found a logout link
-//                    return true;
-//                }
-//            }
-//        }
-
-        return false;
+        return (bool)$user->uid;
     }
 
     /**
@@ -300,9 +283,9 @@ abstract class DrupalTestCase extends WebTestCase
      * @param string $pass
      * @return void
      */
-    protected function assertCanLogin($user, $pass)
+    protected function assertCanLogin($user)
     {
-        $this->drupalLogin($user, $pass);
+        $this->drupalLogin($user);
         $this->drupalLogout();
     }
 
