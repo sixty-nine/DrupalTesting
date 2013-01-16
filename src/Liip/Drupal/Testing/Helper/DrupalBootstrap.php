@@ -3,6 +3,7 @@
 namespace Liip\Drupal\Testing\Helper;
 
 use Goutte\Client;
+use Liip\Drupal\Modules\DrupalConnector\ConnectorFactory;
 
 class DrupalBootstrap
 {
@@ -32,8 +33,6 @@ class DrupalBootstrap
    */
   public function bootstrapDrupal($root = null, $httpHost = null)
   {
-    $connector = new DrupalConnector();
-
     if (!defined('DRUPAL_ROOT')) {
 
       // If a $root is provided, search the Drupal root there.
@@ -71,7 +70,7 @@ class DrupalBootstrap
     require_once DRUPAL_ROOT . '/modules/system/system.module';
     require_once DRUPAL_ROOT . '/includes/database/select.inc';
 
-    $connector->drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
+    ConnectorFactory::getBootstrapConnector()->drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
   }
 
   /**

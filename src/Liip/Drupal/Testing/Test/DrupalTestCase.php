@@ -13,8 +13,6 @@ use Monolog\Logger;
 
 abstract class DrupalTestCase extends WebTestCase
 {
-    protected $connector;
-
     protected $drupalHelper;
 
     protected $baseUrl;
@@ -24,7 +22,6 @@ abstract class DrupalTestCase extends WebTestCase
         parent::__construct();
 
         $this->baseUrl = $baseUrl;
-        //$this->connector = new DrupalConnector();
         $this->drupalHelper = new DrupalHelper();
         $this->drupalHelper->drupalBootstrap();
     }
@@ -105,7 +102,7 @@ abstract class DrupalTestCase extends WebTestCase
      */
     protected function drupalDeleteRole($rid)
     {
-        $this->connector->user_role_delete($rid);
+        ConnectorFactory::getUserConnector()->user_role_delete($rid);
     }
 
     /**
@@ -126,7 +123,7 @@ abstract class DrupalTestCase extends WebTestCase
      */
     protected function drupalEnableModule(array $moduleList, $enableDependencies = false)
     {
-        $this->connector->module_enable($moduleList, $enableDependencies);
+        ConnectorFactory::getModuleConnector()->module_enable($moduleList, $enableDependencies);
     }
 
     /**
@@ -137,7 +134,7 @@ abstract class DrupalTestCase extends WebTestCase
      */
     protected function drupalDisableModule(array $moduleList, $disableDependencies = false)
     {
-        $this->connector->module_disable($moduleList, $disableDependencies);
+        ConnectorFactory::getModuleConnector()->module_disable($moduleList, $disableDependencies);
     }
 
     /**
@@ -147,7 +144,7 @@ abstract class DrupalTestCase extends WebTestCase
      */
     protected function drupalModuleEnabled($moduleName)
     {
-        return $this->connector->module_exists($moduleName);
+        return ConnectorFactory::getModuleConnector()->module_exists($moduleName);
     }
 
     /**
@@ -229,7 +226,7 @@ abstract class DrupalTestCase extends WebTestCase
 //              $settings['uid'] = $this->loggedInUser->uid;
 //          }
 //          else {
-            $settings['uid'] = $this->connector->current_user()->uid;
+            $settings['uid'] = ConnectorFactory::getUserConnector()->current_user()->uid;
 //              global $user;
 //              $settings['uid'] = $user->uid;
 //          }
@@ -240,17 +237,17 @@ abstract class DrupalTestCase extends WebTestCase
         $body = array(
             'value' => $content,
             'summary' => null,
-            'format' => $this->connector->filter_default_format(),
+            'format' => ConnectorFactory::getFilterConnector()->filter_default_format(),
             'safe_value' => "<p>$content</p>\n",
             'safe_summary' => '',
         );
         $settings['body'][$settings['language']][0] += $body;
 
         $node = (object) $settings;
-        $this->connector->node_save($node);
+        ConnectorFactory::getNodeConnector()->node_save($node);
 
         // Small hack to link revisions to our test user.
-        $this->connector->db_update('node_revision')
+        ConnectorFactory::getDatabaseConnector()->db_update('node_revision')
             ->fields(array('uid' => $node->uid))
             ->condition('vid', $node->vid)
             ->execute();
@@ -264,7 +261,7 @@ abstract class DrupalTestCase extends WebTestCase
      * @return void
      */
     protected function drupalDeleteNode($nid) {
-        $this->connector->node_delete($nid);
+        ConnectorFactory::getNodeConnector()->node_delete($nid);
     }
 
 
@@ -281,10 +278,10 @@ abstract class DrupalTestCase extends WebTestCase
      */
     protected function assertValidPermissions(array $permissions, $reset = FALSE)
     {
-        $available = &$this->connector->drupal_static(__FUNCTION__);
+        $available = &ConnectorFactory::getBootstrapConnector()->drupal_static(__FUNCTION__);
 
         if (!isset($available) || $reset) {
-            $available = array_keys($this->connector->module_invoke_all('permission'));
+            $available = array_keys(ConnectorFactory::getModuleConnector()->module_invoke_all('permission'));
         }
 
         $valid = TRUE;
@@ -331,18 +328,18 @@ abstract class DrupalTestCase extends WebTestCase
     protected function assertNodeAccess($user, $node, $op = 'view', $expectAccess = true)
     {
         if (is_numeric($user)) {
-            $account = $this->connector->user_load($user);
+            $account = ConnectorFactory::getUserConnector()->user_load($user);
         } else {
             $account = $user;
         }
 
         if (is_numeric($node)) {
-            $node = $this->connector->node_load($node);
+            $node = ConnectorFactory::getNodeConnector()->node_load($node);
         }
 
         $this->assertEquals(
             $expectAccess,
-            $this->connector->node_access($op, $account, $node),
+            ConnectorFactory::getNodeConnector()->node_access($op, $account, $node),
             sprintf(
                 'Failed to assert that the user %s %s %s access to node %s',
                 $user->uid,

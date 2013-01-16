@@ -105,7 +105,7 @@ class DrupalHelper
         $edit = array();
         $edit['name'] = is_null($name) ? uniqid('test_user_') : $name;
         $edit['mail'] = is_null($email) ? $edit['name'] . '@test.com' : $email;
-        $edit['pass'] = is_null($pass) ? $this->connector->user_password() : $pass;
+        $edit['pass'] = is_null($pass) ? ConnectorFactory::getUserConnector()->user_password() : $pass;
         $edit['status'] = 1;
         if ($rid) {
             $edit['roles'] = array($rid => $rid);
