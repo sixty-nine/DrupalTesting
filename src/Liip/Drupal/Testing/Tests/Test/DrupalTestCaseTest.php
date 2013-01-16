@@ -57,8 +57,8 @@ class DrupalTestCaseTest extends DrupalTestCase
 
     public function testAssertModuleEnabled()
     {
-        // Hopefully the taxonomy module is enabled
-        $this->assertModuleEnabled('taxonomy');
+        // Hopefully the "block" module is enabled
+        $this->assertModuleEnabled('block');
 
         // This is a phpunit hack, this assertion is expected to fail because
         // there should be no module named 'unexisting-module' installed.
