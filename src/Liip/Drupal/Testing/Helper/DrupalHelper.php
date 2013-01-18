@@ -53,6 +53,7 @@ class DrupalHelper
     public function drupalLogin($user, $pass, $expectedToFail = false)
     {
         // TODO: implement without the client/crawler
+        throw new \Exception('Not implemented');
     }
 
     /**
@@ -62,6 +63,7 @@ class DrupalHelper
     public function drupalLogout()
     {
         // TODO: implement without the client/crawler
+        throw new \Exception('Not implemented');
     }
 
     /**
@@ -71,6 +73,7 @@ class DrupalHelper
     public function drupalIsLoggedIn()
     {
         // TODO: implement without the client/crawler
+        throw new \Exception('Not implemented');
     }
 
     /**
