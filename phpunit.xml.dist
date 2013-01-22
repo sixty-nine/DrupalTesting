@@ -20,6 +20,18 @@
         <const name="DRUPAL_ROOT" value="/path/to/your/drupal/install" />
         <const name="DRUPAL_BASEURL" value="http://url.of.drupal" />
         <const name="DRUPAL_ADMIN_PASSWORD" value="admin" />
+
+        <!-- Where the test DBs will be created -->
+        <const name="TEST_DB_BASE_PATH" value="/directory/where/the/testdb/will/be/created" />
+
+        <!-- The source DB for the test, i.e. a SQLite DB that will be copied to the test DBs -->
+        <const name="SOURCE_TEST_DB" value="/path/to/a/sqlite/template/db" />
+
+        <!--
+            Set to "true" if you want a new test DB for each Test, otherwise a new test DB will be created at the
+            start of the execution and will be used for each TestCase.
+        -->
+        <const name="RESET_DB_ON_EACH_TEST" value="false" />
     </php>
 
 </phpunit>

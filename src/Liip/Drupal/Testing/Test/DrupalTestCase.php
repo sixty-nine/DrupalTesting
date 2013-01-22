@@ -6,6 +6,8 @@ use Liip\Drupal\Testing\Helper\DrupalHelper;
 
 use Liip\Drupal\Modules\DrupalConnector\ConnectorFactory;
 
+use Liip\Drupal\Testing\Helper\TestDbManager;
+
 use Symfony\Component\DomCrawler\Crawler;
 
 use Monolog\Logger;
@@ -24,6 +26,21 @@ abstract class DrupalTestCase extends WebTestCase
         $this->baseUrl = $baseUrl;
         $this->drupalHelper = new DrupalHelper();
         $this->drupalHelper->drupalBootstrap();
+    }
+
+    public function setUp()
+    {
+        if (RESET_DB_ON_EACH_TEST) {
+            $mgr = new TestDbManager(TEST_DB_BASE_PATH, SOURCE_TEST_DB);
+            $mgr->createTestDb(true, $this->getName());
+        }
+
+        TestDbManager::useTestDb();
+    }
+
+    public function tearDown()
+    {
+        TestDbManager::useDrupalDb();
     }
 
     /**
