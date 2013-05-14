@@ -84,6 +84,11 @@ class DrupalConnector {
     }
 
     public function drupal_bootstrap($phase = NULL, $new_phase = TRUE) {
+        // change current directory
+        // we do this because settings.php can potentially require files that are
+        // referenced by a path relative to Drupal's root
+        chdir(DRUPAL_ROOT);
+        // call bootstrap
         drupal_bootstrap($phase, $new_phase);
     }
 
