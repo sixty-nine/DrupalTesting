@@ -18,7 +18,7 @@ abstract class DrupalTestCase extends WebTestCase
 
     protected $baseUrl;
 
-    public function __construct($baseUrl)
+    public function __construct($baseUrl = 'http://localhost')
     {
         parent::__construct();
 
