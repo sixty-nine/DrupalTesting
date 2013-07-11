@@ -20,6 +20,17 @@ abstract class WebTestCase extends DebuggableTestCase
     }
 
     /**
+     * This method is called before each test is ran
+     *
+     * NB: if you override setUp remember to call parent::setUp()
+     */
+    protected function setUp()
+    {
+      // clear Drupal's static cache before each test run
+      drupal_static_reset();
+    }
+
+    /**
      * Get a crawler for the given URL.
      * @param string $url
      * @param string $method
