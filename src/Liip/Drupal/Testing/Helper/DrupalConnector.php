@@ -90,7 +90,6 @@ class DrupalConnector {
    */
   public function drupal_swap_cache_backend() {
       global $conf;
-      // @TODO add debugging info
       $this->drupal_bootstrap(DRUPAL_BOOTSTRAP_CONFIGURATION);
       // cannot use cache_backends variable because it is
       // relative to DRUPAL_ROOT - @see _drupal_bootstrap_page_cache()
