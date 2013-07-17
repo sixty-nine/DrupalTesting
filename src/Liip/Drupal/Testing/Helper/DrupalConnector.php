@@ -83,6 +83,29 @@ class DrupalConnector {
         return drupal_anonymous_user();
     }
 
+  /**
+   * In order to truly run tests in isolation the cache mechanism is replaced
+   * by an in-memory cache layer. DrupalFakeCache is not sufficient here
+   * because some tests will need a functional caching layer
+   */
+  public function drupal_swap_cache_backend() {
+      global $conf;
+      // @TODO add debugging info
+      $this->drupal_bootstrap(DRUPAL_BOOTSTRAP_CONFIGURATION);
+      // cannot use cache_backends variable because it is
+      // relative to DRUPAL_ROOT - @see _drupal_bootstrap_page_cache()
+      require_once DRUPAL_ROOT . '/includes/cache.inc';
+      require_once __DIR__ . '/DrupalInMemoryCache.php';
+      $conf['cache_default_class'] = 'DrupalInMemoryCache';
+      unset($conf['cache_backends']);
+      // remove any bin specific cache class
+      foreach($conf as $key => $value) {
+        if (strpos($key, 'cache_class_') === 0) {
+          unset($conf[$key]);
+        }
+      }
+    }
+
     public function drupal_bootstrap($phase = NULL, $new_phase = TRUE) {
         // change current directory
         // we do this because settings.php can potentially require files that are

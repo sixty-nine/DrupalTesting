@@ -26,8 +26,26 @@ abstract class WebTestCase extends DebuggableTestCase
      */
     protected function setUp()
     {
-      // clear Drupal's static cache before each test run
-      drupal_static_reset();
+        // clear Drupal's static cache before each test run
+        drupal_static_reset();
+
+        $cache_object = _cache_get_object('cache');
+        if (is_a($cache_object, 'DrupalInMemoryCache')) {
+            \DrupalInMemoryCache::enableTempStorage();
+        }
+        parent::setUp();
+    }
+
+    /**
+     * Restore the original (bootstrapped) cache state after each test
+     */
+    protected function tearDown()
+    {
+        $cache_object = _cache_get_object('cache');
+        if (is_a($cache_object, 'DrupalInMemoryCache')) {
+            \DrupalInMemoryCache::disableTempStorage();
+        }
+        parent::tearDown();
     }
 
     /**
@@ -112,7 +130,7 @@ abstract class WebTestCase extends DebuggableTestCase
     {
         $status = $this->client->getResponse()->getStatus();
         $uri = $this->client->getRequest()->getUri();
-        
+
         $this->assertEquals(
             $expectedStatus,
             $status,
