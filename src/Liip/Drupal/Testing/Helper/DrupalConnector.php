@@ -138,6 +138,11 @@ class DrupalConnector {
         return $static;
     }
 
+    public function drupal_static_reset($name = NULL)
+    {
+        return drupal_static_reset($name);
+    }
+
     public function drupal_unpack($obj, $field = 'data') {
         return drupal_unpack($obj, $field);
     }

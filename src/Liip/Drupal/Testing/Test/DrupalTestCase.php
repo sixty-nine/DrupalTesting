@@ -29,6 +29,17 @@ abstract class DrupalTestCase extends WebTestCase
     }
 
     /**
+     * This method is called before each test is ran
+     *
+     * NB: if you override setUp remember to call parent::setUp()
+     */
+    protected function setUp()
+    {
+      // clear Drupal's static cache before each test run
+      $this->connector->drupal_static_reset();
+    }
+
+    /**
      * Log in to Drupal
      * @param string $user
      * @param string $pass
