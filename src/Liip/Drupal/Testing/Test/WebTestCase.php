@@ -101,7 +101,7 @@ abstract class WebTestCase extends DebuggableTestCase
     {
         $status = $this->client->getResponse()->getStatus();
         $uri = $this->client->getRequest()->getUri();
-        
+
         $this->assertEquals(
             $expectedStatus,
             $status,

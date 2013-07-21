@@ -6,6 +6,10 @@ use Goutte\Client;
 
 class DrupalHelper
 {
+
+    /**
+     * @var DrupalConnector
+     */
     protected $connector;
 
     public function __construct()
@@ -23,15 +27,15 @@ class DrupalHelper
         if (defined('DRUPAL_ROOT')) {
 
             $defaults = array(
-                    'PHP_SELF' => '/index.php',
-                    'QUERY_STRING' => '',
-                    'REQUEST_URI' => '/',
-                    'SCRIPT_NAME' => NULL,
-                    'REMOTE_ADDR' => NetHelper::getServerAddress(),
-                    'REQUEST_METHOD' => 'GET',
-                    'SERVER_NAME' => NULL,
-                    'SERVER_SOFTWARE' => NULL,
-                    'HTTP_USER_AGENT' => 'console',
+                'PHP_SELF' => '/index.php',
+                'QUERY_STRING' => '',
+                'REQUEST_URI' => '/',
+                'SCRIPT_NAME' => NULL,
+                'REMOTE_ADDR' => NetHelper::getServerAddress(),
+                'REQUEST_METHOD' => 'GET',
+                'SERVER_NAME' => NULL,
+                'SERVER_SOFTWARE' => NULL,
+                'HTTP_USER_AGENT' => 'console',
             );
 
             if ($httpHost) {
@@ -46,9 +50,13 @@ class DrupalHelper
             require_once DRUPAL_ROOT . '/modules/system/system.module';
             require_once DRUPAL_ROOT . '/includes/database/select.inc';
 
+            if (!defined('DISABLE_CACHE_REPLACEMENT') || !DISABLE_CACHE_REPLACEMENT) {
+                $this->connector->drupal_swap_cache_backend();
+            }
             $this->connector->drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
 
-        } else {
+        }
+        else {
             throw new \InvalidArgumentException('Constant DRUPAL_ROOT is not defined.');
         }
     }
@@ -124,7 +132,7 @@ class DrupalHelper
         // Assign the domain access
         $edit['domain_user'] = array();
         foreach ($domains as $domainId) {
-          $edit['domain_user'][$domainId] = $domainId;
+            $edit['domain_user'][$domainId] = $domainId;
         }
 
         $account = $this->connector->user_save($this->connector->drupal_anonymous_user(), $edit);
@@ -260,22 +268,22 @@ class DrupalHelper
     {
         // Populate defaults array.
         $settings += array(
-            'body'      => array(LANGUAGE_NONE => array(array())),
-            'title'     => uniqid('node_'),
-            'comment'   => 2,
-            'changed'   => REQUEST_TIME,
-            'moderate'  => 0,
-            'promote'   => 0,
-            'revision'  => 1,
-            'log'       => '',
-            'status'    => 1,
-            'sticky'    => 0,
-            'type'      => 'page',
+            'body' => array(LANGUAGE_NONE => array(array())),
+            'title' => uniqid('node_'),
+            'comment' => 2,
+            'changed' => REQUEST_TIME,
+            'moderate' => 0,
+            'promote' => 0,
+            'revision' => 1,
+            'log' => '',
+            'status' => 1,
+            'sticky' => 0,
+            'type' => 'page',
             'revisions' => NULL,
-            'language'  => LANGUAGE_NONE,
+            'language' => LANGUAGE_NONE,
         );
 
-      // Use the original node's created time for existing nodes.
+        // Use the original node's created time for existing nodes.
         if (isset($settings['created']) && !isset($settings['date'])) {
             $settings['date'] = $this->connector->format_date($settings['created'], 'custom', 'Y-m-d H:i:s O');
         }
@@ -295,7 +303,7 @@ class DrupalHelper
         );
         $settings['body'][$settings['language']][0] += $body;
 
-        $node = (object) $settings;
+        $node = (object)$settings;
         $this->connector->node_save($node);
 
         // Small hack to link revisions to our test user.
@@ -312,7 +320,8 @@ class DrupalHelper
      * @param int $nid The node id to delete
      * @return void
      */
-    public function drupalDeleteNode($nid) {
+    public function drupalDeleteNode($nid)
+    {
         $this->connector->node_delete($nid);
     }
 
