@@ -6,6 +6,10 @@ use Goutte\Client;
 
 class DrupalHelper
 {
+
+    /**
+     * @var DrupalConnector
+     */
     protected $connector;
 
     public function __construct()
@@ -46,6 +50,9 @@ class DrupalHelper
             require_once DRUPAL_ROOT . '/modules/system/system.module';
             require_once DRUPAL_ROOT . '/includes/database/select.inc';
 
+            if (!defined('DISABLE_CACHE_REPLACEMENT') || !DISABLE_CACHE_REPLACEMENT) {
+                $this->connector->drupal_swap_cache_backend();
+            }
             $this->connector->drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
 
         } else {
