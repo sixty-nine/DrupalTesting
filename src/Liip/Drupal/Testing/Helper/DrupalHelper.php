@@ -6,6 +6,10 @@ use Goutte\Client;
 
 class DrupalHelper
 {
+
+    /**
+     * @var DrupalConnector
+     */
     protected $connector;
 
     public function __construct()

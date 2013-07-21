@@ -12,6 +12,14 @@ namespace Liip\Drupal\Testing\Helper;
  */
 class DrupalConnector {
 
+    /**
+     * Flag which will be set to TRUE if the cache backend has been swapped with
+     * the custom in-memory one
+     *
+     * @var bool
+     */
+    protected $customCacheEnabled = FALSE;
+
     public function arg($index = NULL, $path = NULL) {
         return arg($index, $path);
     }
@@ -103,6 +111,15 @@ class DrupalConnector {
           unset($conf[$key]);
         }
       }
+
+      $this->customCacheEnabled = TRUE;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasCustomCacheEnabled() {
+      return $this->customCacheEnabled;
     }
 
     public function drupal_bootstrap($phase = NULL, $new_phase = TRUE) {

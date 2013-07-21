@@ -20,35 +20,6 @@ abstract class WebTestCase extends DebuggableTestCase
     }
 
     /**
-     * This method is called before each test is ran
-     *
-     * NB: if you override setUp remember to call parent::setUp()
-     */
-    protected function setUp()
-    {
-        // clear Drupal's static cache before each test run
-        drupal_static_reset();
-
-        $cache_object = _cache_get_object('cache');
-        if (is_a($cache_object, 'DrupalInMemoryCache')) {
-            \DrupalInMemoryCache::enableTempStorage();
-        }
-        parent::setUp();
-    }
-
-    /**
-     * Restore the original (bootstrapped) cache state after each test
-     */
-    protected function tearDown()
-    {
-        $cache_object = _cache_get_object('cache');
-        if (is_a($cache_object, 'DrupalInMemoryCache')) {
-            \DrupalInMemoryCache::disableTempStorage();
-        }
-        parent::tearDown();
-    }
-
-    /**
      * Get a crawler for the given URL.
      * @param string $url
      * @param string $method
