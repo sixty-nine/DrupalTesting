@@ -8,8 +8,9 @@
  *
  * Provides a way to keep a "permanent" and unaltered storage of the original
  * primed cached (which happened during bootstrap) - see WebTestCase::setUp.
- * After each test completes (see WebTestCase::tearDown) the cache is
- * restored back to its initial state
+ * After each test completes (see WebTestCase::tearDown) that cache is
+ * restored back to its initial state and the temporary in-test cache
+ * is cleared.
  */
 
 class DrupalInMemoryCache extends DrupalDatabaseCache implements DrupalCacheInterface
@@ -38,6 +39,7 @@ class DrupalInMemoryCache extends DrupalDatabaseCache implements DrupalCacheInte
 
     /**
      * Constructs a new DrupalInMemoryCache object.
+     * @param string $bin
      */
     public function __construct($bin)
     {
@@ -78,7 +80,6 @@ class DrupalInMemoryCache extends DrupalDatabaseCache implements DrupalCacheInte
 
     /**
      * Restore the original copy of the storage
-     * Restore the original copy of the storage
      */
     public function restoreOriginalStorage()
     {
@@ -86,30 +87,49 @@ class DrupalInMemoryCache extends DrupalDatabaseCache implements DrupalCacheInte
     }
 
     /**
-     * Replacement of variable_set
+     * Returns true if this class handles the caching layer in a Drupal
+     * environment
      *
-     * @param $name
-     * @param $value
+     * @return bool
      */
-    public static function variableSet($name, $value)
+    public static function isActive()
     {
-        self::$vars[$name] = $value;
+        return (string) $GLOBALS['conf']['cache_default_class'] == get_called_class();
     }
 
     /**
-     * Replacement of variable_get
+     * Instead of variable_set the DrupalInMemoryCache class will call this
+     * method in order to ensure that the variables table is not altered
+     * Currently there is no pluggable system for variable_set/get so if a test
+     * uses variable_set it will still update the variables table
      *
-     * @param $name
-     * @param null $default
-     * @return null
+     * @param string $name
+     * @param mixed $value
+     */
+    public static function variableSet($name, $value)
+    {
+        global $conf;
+        self::$vars[$name] = $value;
+        $conf[$name] = $value;
+    }
+
+    /**
+     * Wrapper around variable_get. It will use that function as a fallback if
+     * variableSet hasn't been called already for the variable $name
+     *
+     * @param string $name
+     * @param null|mixed $default
+     * @return mixed
      */
     public static function variableGet($name, $default = NULL)
     {
-        return isset(self::$vars[$name]) ? self::$vars[$name] : $default;
+        return isset(self::$vars[$name]) ? self::$vars[$name] : variable_get($name, $default);
     }
 
     /**
      * Implements DrupalCacheInterface::getMultiple().
+     * @param arrat $cids
+     * @return mixed
      */
     function getMultiple(&$cids)
     {
@@ -132,9 +152,6 @@ class DrupalInMemoryCache extends DrupalDatabaseCache implements DrupalCacheInte
 
     /**
      * Garbage collection for get() and getMultiple().
-     *
-     * @param $bin
-     *   The bin being requested.
      */
     protected function garbageCollection()
     {
@@ -180,17 +197,15 @@ class DrupalInMemoryCache extends DrupalDatabaseCache implements DrupalCacheInte
      * Checks that items are either permanent or did not expire, and unserializes
      * data as appropriate.
      *
-     * @param $cache
+     * @param mixed $cache
      *   An item loaded from cache_get() or cache_get_multiple().
      *
-     * @return
+     * @return mixed
      *   The item with data unserialized as appropriate or FALSE if there is no
      *   valid item to load.
      */
     protected function prepareItem($cache)
     {
-        global $user;
-
         if (!isset($cache->data)) {
             return FALSE;
         }
@@ -212,9 +227,11 @@ class DrupalInMemoryCache extends DrupalDatabaseCache implements DrupalCacheInte
     }
 
     /**
-     * Implements DrupalCacheInterface::set().
+     * @param string $cid
+     * @param mixed $data
+     * @param int $expire
      */
-    function set($cid, $data, $expire = CACHE_PERMANENT)
+    public function set($cid, $data, $expire = CACHE_PERMANENT)
     {
         $fields = array(
             'serialized' => 0,
@@ -238,11 +255,12 @@ class DrupalInMemoryCache extends DrupalDatabaseCache implements DrupalCacheInte
 
     /**
      * Implements DrupalCacheInterface::clear().
+     *
+     * @param string $cid
+     * @param bool $wildcard
      */
-    function clear($cid = NULL, $wildcard = FALSE)
+    public function clear($cid = NULL, $wildcard = FALSE)
     {
-        global $user;
-
         if (empty($cid)) {
             if (DrupalInMemoryCache::variableGet('cache_lifetime', 0)) {
                 // We store the time in the current user's session. We then simulate
@@ -297,8 +315,9 @@ class DrupalInMemoryCache extends DrupalDatabaseCache implements DrupalCacheInte
 
     /**
      * Implements DrupalCacheInterface::isEmpty().
+     * @return bool
      */
-    function isEmpty()
+    public function isEmpty()
     {
         return empty($this->storage);
     }

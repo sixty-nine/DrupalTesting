@@ -7,6 +7,12 @@ use Goutte\Client;
 use Symfony\Component\DomCrawler\Form,
     Symfony\Component\DomCrawler\Crawler;
 
+/**
+ * Generic test case (non-Drupal specific)
+ *
+ * Class WebTestCase
+ * @package Liip\Drupal\Testing\Test
+ */
 abstract class WebTestCase extends DebuggableTestCase
 {
     protected $client;

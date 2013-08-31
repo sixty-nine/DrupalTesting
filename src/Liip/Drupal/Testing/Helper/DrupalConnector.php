@@ -119,9 +119,13 @@ class DrupalConnector {
      * @return bool
      */
     public function hasCustomCacheEnabled() {
-      return $this->customCacheEnabled;
+      return \DrupalInMemoryCache::isActive();
     }
 
+    /**
+     * @param null $phase
+     * @param bool $new_phase
+     */
     public function drupal_bootstrap($phase = NULL, $new_phase = TRUE) {
         // change current directory
         // we do this because settings.php can potentially require files that are
