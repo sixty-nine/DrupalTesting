@@ -20,8 +20,13 @@
         <const name="DRUPAL_ROOT" value="/path/to/your/drupal/install" />
         <const name="DRUPAL_BASEURL" value="http://url.of.drupal" />
         <const name="DRUPAL_ADMIN_PASSWORD" value="admin" />
-        <!-- Uncomment the line below if DrupalInMemoryCache shouldn't be used
-             to replace the normal DrupalDatabaseCache -->
+        <!--
+        By default the caching mechanism is replaced with an in-memory based one
+        to ensure test isolation and to not alter the site's cache. See
+        DrupalInMemoryCache class for more details.
+        Uncomment the line below if DrupalInMemoryCache shouldn't be used
+        to replace the normal DrupalDatabaseCache.
+        -->
         <!-- <const name="DISABLE_CACHE_REPLACEMENT" value="TRUE" /> -->
     </php>
 
