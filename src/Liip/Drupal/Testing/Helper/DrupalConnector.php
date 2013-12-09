@@ -103,7 +103,7 @@ class DrupalConnector {
       // relative to DRUPAL_ROOT - @see _drupal_bootstrap_page_cache()
       require_once DRUPAL_ROOT . '/includes/cache.inc';
       require_once __DIR__ . '/DrupalInMemoryCache.php';
-      $conf['cache_default_class'] = 'DrupalInMemoryCache';
+      $conf['cache_default_class'] = '\Liip\Drupal\Testing\Helper\DrupalInMemoryCache';
       unset($conf['cache_backends']);
       // remove any bin specific cache class
       foreach($conf as $key => $value) {

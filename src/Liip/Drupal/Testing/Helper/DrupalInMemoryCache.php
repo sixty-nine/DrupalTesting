@@ -13,7 +13,9 @@
  * is cleared.
  */
 
-class DrupalInMemoryCache extends DrupalDatabaseCache implements DrupalCacheInterface
+namespace Liip\Drupal\Testing\Helper;
+
+class DrupalInMemoryCache extends \DrupalDatabaseCache implements \DrupalCacheInterface
 {
 
     /**
@@ -67,6 +69,15 @@ class DrupalInMemoryCache extends DrupalDatabaseCache implements DrupalCacheInte
         foreach (self::$cacheObjects as $obj) {
             $obj->restoreOriginalStorage();
         }
+    }
+
+    /**
+     *  Method to delete the temp storage
+     */
+    public static function deleteTempStorage() {
+      foreach (self::$cacheObjects as $obj) {
+        $obj->clear('*', TRUE);
+      }
     }
 
     /**
