@@ -17,9 +17,9 @@
     ],
     "require": {
         "php": ">=5.3.0",
-    	"monolog/monolog": "dev-master",
-        "fabpot/goutte": "dev-master",
-        "symfony/console": "dev-master",
+        "monolog/monolog": "~1.7",
+        "fabpot/goutte": "~1",
+        "symfony/console": "~2",
         "liip/drupalconnectormodule": "dev-master"
     },
     "autoload": {
