@@ -1,12 +1,12 @@
 {
-    "name": "liip/drupal-testing",
+    "name": "sixtynine/drupal-testing",
     "description": "A library to integrate PHPUnit with Drupal",
     "keywords": ["testing", "phpunit", "drupal"],
     "type": "library",
     "authors": [
         {
             "name": "Daniel Barsotti",
-            "email": "daniel.barsotti@liip.ch"
+            "email": "dan@sixty-nine.ch"
         }
     ],
     "repositories": [
