@@ -1,6 +1,6 @@
 <?php
 
-namespace Liip\Drupal\Testing\Test;
+namespace SixtyNine\Drupal\Testing\Test;
 
 use Monolog\Logger;
 

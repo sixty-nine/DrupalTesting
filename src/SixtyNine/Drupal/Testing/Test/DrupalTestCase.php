@@ -1,11 +1,9 @@
 <?php
 
-namespace Liip\Drupal\Testing\Test;
+namespace SixtyNine\Drupal\Testing\Test;
 
-use Liip\Drupal\Testing\Helper\DrupalConnector,
-    Liip\Drupal\Testing\Helper\DrupalHelper;
-
-use Symfony\Component\DomCrawler\Crawler;
+use SixtyNine\Drupal\Testing\Helper\DrupalConnector,
+    SixtyNine\Drupal\Testing\Helper\DrupalHelper;
 
 use Monolog\Logger;
 

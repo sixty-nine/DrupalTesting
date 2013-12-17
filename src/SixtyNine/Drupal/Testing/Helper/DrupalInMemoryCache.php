@@ -13,7 +13,7 @@
  * is cleared.
  */
 
-namespace Liip\Drupal\Testing\Helper;
+namespace SixtyNine\Drupal\Testing\Helper;
 
 class DrupalInMemoryCache extends \DrupalDatabaseCache implements \DrupalCacheInterface
 {

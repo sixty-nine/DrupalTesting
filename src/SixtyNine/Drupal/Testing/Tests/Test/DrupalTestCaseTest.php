@@ -1,8 +1,8 @@
 <?php
 
-namespace Liip\Drupal\Testing\Tests;
+namespace SixtyNine\Drupal\Testing\Tests;
 
-use Liip\Drupal\Testing\Test\DrupalTestCase;
+use SixtyNine\Drupal\Testing\Test\DrupalTestCase;
 
 
 class DrupalTestCaseTest extends DrupalTestCase

@@ -5,10 +5,9 @@
  * Tests functionality related to the DrupalInMemoryCache cache class
  */
 
-namespace Liip\Drupal\Testing\Tests;
+namespace SixtyNine\Drupal\Testing\Tests;
 
-use Liip\Drupal\Testing\Test\DrupalTestCase,
-    Liip\Drupal\Testing\Helper\DrupalBootstrap;
+use SixtyNine\Drupal\Testing\Test\DrupalTestCase;
 
 
 class DrupalInMemoryCacheTest extends DrupalTestCase

@@ -1,6 +1,6 @@
 <?php
 
-namespace Liip\Drupal\Testing\Debug;
+namespace SixtyNine\Drupal\Testing\Debug;
 
 class Debug
 {

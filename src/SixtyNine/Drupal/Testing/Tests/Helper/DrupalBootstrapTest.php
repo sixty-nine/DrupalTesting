@@ -1,9 +1,9 @@
 <?php
 
-namespace Liip\Drupal\Testing\Tests;
+namespace SixtyNine\Drupal\Testing\Tests;
 
-use Liip\Drupal\Testing\Test\DrupalTestCase,
-    Liip\Drupal\Testing\Helper\DrupalBootstrap;
+use SixtyNine\Drupal\Testing\Test\DrupalTestCase,
+    SixtyNine\Drupal\Testing\Helper\DrupalBootstrap;
 
 
 class DrupalBootstrapTest extends DrupalTestCase

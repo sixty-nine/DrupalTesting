@@ -1,6 +1,6 @@
 <?php
 
-namespace Liip\Drupal\Testing\Helper;
+namespace SixtyNine\Drupal\Testing\Helper;
 
 class NetHelper
 {

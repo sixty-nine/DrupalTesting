@@ -7,6 +7,9 @@
         {
             "name": "Daniel Barsotti",
             "email": "dan@sixty-nine.ch"
+        },
+        {
+            "name": "andreiashu"
         }
     ],
     "repositories": [
@@ -24,7 +27,7 @@
     },
     "autoload": {
         "psr-0": {
-            "Liip\\Drupal\\Testing": "src"
+            "SixtyNine\\Drupal\\Testing": "src"
         }
     },
     "extra": {

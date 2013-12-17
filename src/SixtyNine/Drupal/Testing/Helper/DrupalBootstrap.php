@@ -1,8 +1,6 @@
 <?php
 
-namespace Liip\Drupal\Testing\Helper;
-
-use Goutte\Client;
+namespace SixtyNine\Drupal\Testing\Helper;
 
 class DrupalBootstrap
 {
@@ -17,19 +15,20 @@ class DrupalBootstrap
     $helper->bootstrapDrupal($root);
   }
 
-  /**
-   * Bootstrap Drupal.
-   *
-   * This function will try to find the Drupal root directory as follow:
-   *
-   *  - If the DRUPAL_ROOT constant is defined, use it and ignore the $root provided.
-   *  - Else if $root is provided then search for a valid Drupal root in that path and its parents.
-   *    IF A VALID ROOT IS FOUND THE DRUPAL_ROOT CONSTANT WILL BE DEFINED !
-   *  - Otherwise fail.
-   *
-   * @param string|null $root
-   * @param string $httpHost
-   */
+    /**
+     * Bootstrap Drupal.
+     *
+     * This function will try to find the Drupal root directory as follow:
+     *
+     *  - If the DRUPAL_ROOT constant is defined, use it and ignore the $root provided.
+     *  - Else if $root is provided then search for a valid Drupal root in that path and its parents.
+     *    IF A VALID ROOT IS FOUND THE DRUPAL_ROOT CONSTANT WILL BE DEFINED !
+     *  - Otherwise fail.
+     *
+     * @param string|null $root
+     * @param string $httpHost
+     * @throws \InvalidArgumentException
+     */
   public function bootstrapDrupal($root = null, $httpHost = null)
   {
     $connector = new DrupalConnector();
@@ -77,10 +76,11 @@ class DrupalBootstrap
     $connector->drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
   }
 
-  /**
-   * Try to locate the Drupal root in the given path or any of it parents.
-   * @param string $path
-   */
+    /**
+     * Try to locate the Drupal root in the given path or any of it parents.
+     * @param string $path
+     * @return bool|string
+     */
   public function lookupDrupalRoot($path)
   {
     while ($path !== '/') {
@@ -93,11 +93,12 @@ class DrupalBootstrap
     return false;
   }
 
-  /**
-   * Try to determine if the given path contains a valid Drupal installation.
-   * @param string $path
-   * @return bool
-   */
+    /**
+     * Try to determine if the given path contains a valid Drupal installation.
+     * @param string $path
+     * @throws \InvalidArgumentException
+     * @return bool
+     */
   public function isDrupalRoot($path)
   {
     if (!is_dir($path)) {
