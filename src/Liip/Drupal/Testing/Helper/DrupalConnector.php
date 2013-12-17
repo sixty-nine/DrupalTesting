@@ -2,6 +2,8 @@
 
 namespace Liip\Drupal\Testing\Helper;
 
+use Liip\Drupal\Testing\Helper\DrupalInMemoryCache;
+
 /**
  * This class was originally written by the Migipedia team at Liip.
  * 
@@ -119,7 +121,7 @@ class DrupalConnector {
      * @return bool
      */
     public function hasCustomCacheEnabled() {
-      return \DrupalInMemoryCache::isActive();
+      return DrupalInMemoryCache::isActive();
     }
 
     /**
