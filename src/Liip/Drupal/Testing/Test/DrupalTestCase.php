@@ -40,7 +40,7 @@ abstract class DrupalTestCase extends WebTestCase
         $this->connector->drupal_static_reset();
 
         if ($this->connector->hasCustomCacheEnabled()) {
-          DrupalInMemoryCache::enableTempStorage();
+            DrupalInMemoryCache::enableTempStorage();
         }
         parent::setUp();
     }

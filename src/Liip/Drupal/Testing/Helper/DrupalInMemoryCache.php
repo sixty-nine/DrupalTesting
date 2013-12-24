@@ -105,6 +105,8 @@ class DrupalInMemoryCache extends \DrupalDatabaseCache implements \DrupalCacheIn
      */
     public static function isActive()
     {
+        // In the DrupalConnector::drupal_swap_cache_backend the class is
+        // passed with a trailing backslash hence it is needed here too
         return (string) $GLOBALS['conf']['cache_default_class'] === '\\' . get_called_class();
     }
 
