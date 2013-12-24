@@ -5,6 +5,7 @@ namespace Liip\Drupal\Testing\Test;
 use Liip\Drupal\Testing\Helper\DrupalConnector,
     Liip\Drupal\Testing\Helper\DrupalHelper;
 
+use Liip\Drupal\Testing\Helper\DrupalInMemoryCache;
 use Symfony\Component\DomCrawler\Crawler;
 
 use Monolog\Logger;
@@ -39,7 +40,7 @@ abstract class DrupalTestCase extends WebTestCase
         $this->connector->drupal_static_reset();
 
         if ($this->connector->hasCustomCacheEnabled()) {
-            \DrupalInMemoryCache::enableTempStorage();
+          DrupalInMemoryCache::enableTempStorage();
         }
         parent::setUp();
     }
@@ -50,7 +51,7 @@ abstract class DrupalTestCase extends WebTestCase
     protected function tearDown()
     {
         if ($this->connector->hasCustomCacheEnabled()) {
-            \DrupalInMemoryCache::disableTempStorage();
+            DrupalInMemoryCache::disableTempStorage();
         }
         parent::tearDown();
     }

@@ -105,7 +105,7 @@ class DrupalInMemoryCache extends \DrupalDatabaseCache implements \DrupalCacheIn
      */
     public static function isActive()
     {
-        return (string) $GLOBALS['conf']['cache_default_class'] == get_called_class();
+        return (string) $GLOBALS['conf']['cache_default_class'] === '\\' . get_called_class();
     }
 
     /**
@@ -151,8 +151,8 @@ class DrupalInMemoryCache extends \DrupalDatabaseCache implements \DrupalCacheIn
         foreach ($this->storage as $key_cid => $data) {
             if (in_array($key_cid, $cids)) {
                 $item = $this->prepareItem($data);
-                if ($data && isset($data->cid)) {
-                    $cache[$data->cid] = $data;
+                if ($item) {
+                    $cache[$key_cid] = $item;
                 }
             }
         }
