@@ -151,7 +151,7 @@ class DrupalInMemoryCache extends \DrupalDatabaseCache implements \DrupalCacheIn
         foreach ($this->storage as $key_cid => $data) {
             if (in_array($key_cid, $cids)) {
                 $item = $this->prepareItem($data);
-                if ($data) {
+                if ($data && isset($data->cid)) {
                     $cache[$data->cid] = $data;
                 }
             }

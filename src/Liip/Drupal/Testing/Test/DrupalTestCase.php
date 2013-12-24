@@ -178,26 +178,25 @@ abstract class DrupalTestCase extends WebTestCase
 
     /**
      * Return true is the current user is logged in
+     * WARNING: this does not work if your theme does not expose a login dialog
      * @return bool
      */
     public function drupalIsLoggedIn()
     {
         $crawler = $this->getCrawler($this->baseUrl . '/user');
-        $this->assertResponseStatusEquals(200);
 
-      return true;
-      // TODO: this does not work on all the themes
+        // TODO: this does not work on all the themes
         // Search for the logout link (even on non standard install where there is a prefix before the usr /user/logout)
-//        $list = $crawler->filterXPath('//a');
-//        foreach($list as $el) {
-//            if ($el->hasAttribute('href')) {
-//                $value = $el->attributes->getNamedItem('href')->value;
-//                if (preg_match('/\/user\/logout/', $value)) {
-//                    // We found a logout link
-//                    return true;
-//                }
-//            }
-//        }
+        $list = $crawler->filterXPath('//a');
+        foreach($list as $el) {
+            if ($el->hasAttribute('href')) {
+                $value = $el->attributes->getNamedItem('href')->value;
+                if (preg_match('/\/user\/logout/', $value)) {
+                    // We found a logout link
+                    return true;
+                }
+            }
+        }
 
         return false;
     }
