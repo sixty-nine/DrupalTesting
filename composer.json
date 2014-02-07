@@ -9,18 +9,11 @@
             "email": "daniel.barsotti@liip.ch"
         }
     ],
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/liip/LiipDrupalConnectorModule"
-        }
-    ],
     "require": {
         "php": ">=5.3.0",
         "monolog/monolog": "~1.7",
         "fabpot/goutte": "~1",
-        "symfony/console": "~2",
-        "liip/drupalconnectormodule": "dev-master"
+        "symfony/console": "~2"
     },
     "autoload": {
         "psr-0": {
