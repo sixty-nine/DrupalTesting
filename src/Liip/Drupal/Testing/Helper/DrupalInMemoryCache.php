@@ -151,7 +151,7 @@ class DrupalInMemoryCache extends \DrupalDatabaseCache implements \DrupalCacheIn
         foreach ($this->storage as $key_cid => $data) {
             if (in_array($key_cid, $cids)) {
                 $item = $this->prepareItem($data);
-                if ($data && isset($data->cid)) {
+                if ($data) {
                     $cache[$data->cid] = $data;
                 }
             }
@@ -248,6 +248,7 @@ class DrupalInMemoryCache extends \DrupalDatabaseCache implements \DrupalCacheIn
             'serialized' => 0,
             'created' => REQUEST_TIME,
             'expire' => $expire,
+            'cid' => $cid
         );
 
         // serialization is required even for in memory storage because get()
