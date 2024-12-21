@@ -4,7 +4,9 @@ namespace Liip\Drupal\Testing\Tests;
 
 use Liip\Drupal\Testing\Test\DrupalTestCase;
 
-
+/**
+ * @group requires-http
+ */
 class DrupalTestCaseTest extends DrupalTestCase
 {
     public function __construct()
